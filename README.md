@@ -9,6 +9,8 @@ DATABASE_NAME="database"
 DATABASE_SCHEMA="public"
 
 DATABASE_URL="postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?schema=${DATABASE_SCHEMA}"
+
+JWT_SECRET="secret"
 ```
 
 ## Setup database
