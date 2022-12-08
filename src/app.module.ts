@@ -7,9 +7,10 @@ import {
 import { AppController } from './app.controller';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { AppService } from './app.service';
+import { NftModule } from './nft/nft.module';
 
 @Module({
-  imports: [],
+  imports: [NftModule],
   controllers: [AppController],
   providers: [AppService],
 })
