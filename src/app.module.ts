@@ -8,9 +8,11 @@ import { AppController } from './app.controller';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { AppService } from './app.service';
 import { NftModule } from './nft/nft.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [NftModule],
+  imports: [NftModule, AuthModule, UsersModule],
   controllers: [AppController],
   providers: [AppService],
 })
