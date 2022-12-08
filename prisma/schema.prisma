@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String  @id @default(uuid())
+  name              String
+  email             String  @unique
+  password          String
+  role              Role    @default(BASIC)
+  blockchainAddress String  @unique
+  Team              Team?   @relation(fields: [teamId], references: [id])
+  teamId            String?
+  isTeamOwner       Boolean @default(false)
+  Nft               Nft[]
+}
+
+model Team {
+  id      String @id @default(uuid())
+  name    String @unique
+  balance Int    @default(0)
+  members User[]
+}
+
+model Nft {
+  id           String      @id @default(uuid())
+  name         String
+  image        String
+  price        Int
+  status       Status      @default(DRAFT)
+  rating       Int         @default(0)
+  rating_count Int         @default(0)
+  owner        User        @relation(fields: [userId], references: [id])
+  userId       String
+  Collection   Collection? @relation(fields: [collectionId], references: [id])
+  collectionId String?
+}
+
+model Collection {
+  id     String  @id @default(uuid())
+  name   String
+  logo   String?
+  status Status  @default(DRAFT)
+  nfts   Nft[]
+}
+
+enum Role {
+  ADMIN
+  BASIC
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
