@@ -11,9 +11,18 @@ import { NftModule } from './nft/nft.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import Constants from './auth/constants';
 
 @Module({
-  imports: [ConfigModule.forRoot(), AuthModule, UsersModule, NftModule],
+  imports: [
+    ConfigModule.forRoot({
+      load: [Constants],
+      isGlobal: true,
+    }),
+    AuthModule,
+    UsersModule,
+    NftModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

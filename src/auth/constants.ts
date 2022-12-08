@@ -1,5 +1,6 @@
 import * as process from 'process';
+import { registerAs } from '@nestjs/config';
 
-export const jwtConstants = {
+export default registerAs('jwt', () => ({
   secret: process.env.JWT_SECRET,
-};
+}));
