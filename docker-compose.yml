@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  database:
+    image: postgres:15.1-alpine
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_SCHEMA=${DATABASE_SCHEMA}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    ports:
+      - '${DATABASE_PORT}:5432'
+    volumes:
+      - database_nft_exchange:/var/lib/postgresql/data
+
+volumes:
+    database_nft_exchange:
+      name: database_nft_exchange
