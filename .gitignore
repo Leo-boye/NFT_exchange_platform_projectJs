@@ -8,6 +8,9 @@ prisma/migrations
 /dist
 /node_modules
 
+# Environment variable
+.env
+
 # Logs
 logs
 *.log
