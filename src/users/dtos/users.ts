@@ -7,11 +7,11 @@ export enum UserRole {
 }
 
 export class UserCreateDto {
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: 'username' })
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: 'user@email.com' })
   @IsNotEmpty()
   @IsEmail()
   email: string;

@@ -1,6 +1,3 @@
-# environment files
-.env
-
 # prisma
 prisma/migrations
 
@@ -9,7 +6,7 @@ prisma/migrations
 /node_modules
 
 # Environment variable
-.env
+*.env
 
 # Logs
 logs

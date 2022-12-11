@@ -11,6 +11,7 @@ import { NftModule } from './nft/nft.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { CollectionModule } from './collection/collection.module';
 import Constants from './auth/constants';
 
 @Module({
@@ -22,6 +23,7 @@ import Constants from './auth/constants';
     AuthModule,
     UsersModule,
     NftModule,
+    CollectionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
