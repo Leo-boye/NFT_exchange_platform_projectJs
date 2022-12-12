@@ -4,6 +4,7 @@ import {
   NotImplementedException,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { TeamsService } from './teams.service';
@@ -24,7 +25,7 @@ export class TeamsController {
     throw new NotImplementedException();
   }
 
-  @Post('invite/:id')
+  @Patch('invite/:id')
   @ApiTags('Teams management')
   @ApiResponse({ status: 200, type: Boolean })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })
@@ -35,7 +36,7 @@ export class TeamsController {
     throw new NotImplementedException();
   }
 
-  @Post('add/:id')
+  @Patch('add/:id')
   @ApiTags('Teams management')
   @ApiResponse({ status: 200, type: Boolean })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })
