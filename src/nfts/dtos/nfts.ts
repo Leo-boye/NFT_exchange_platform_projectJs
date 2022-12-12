@@ -1,9 +1,11 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
 import { IsNotEmpty, IsPositive, IsUrl, IsUUID } from 'class-validator';
 import { Status } from '../../common/dtos/status';
+import { Type } from 'class-transformer';
 
 export class NftRatingDto {
   @ApiProperty({ example: 'TODO' })
+  @Type(() => Number)
   @IsPositive()
   @IsNotEmpty()
   rate: number;
@@ -20,6 +22,7 @@ export class NftCreateDto {
   image: string;
 
   @ApiProperty({ example: 'TODO' })
+  @Type(() => Number)
   @IsPositive()
   @IsNotEmpty()
   price: number;
@@ -36,11 +39,13 @@ export class NftDto extends NftCreateDto {
   id: string;
 
   @ApiProperty({ example: 'TODO' })
+  @Type(() => Number)
   @IsPositive()
   @IsNotEmpty()
   rating: number;
 
   @ApiProperty({ example: 'TODO' })
+  @Type(() => Number)
   @IsPositive()
   @IsNotEmpty()
   rating_count: number;
