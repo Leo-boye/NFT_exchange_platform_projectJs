@@ -7,20 +7,15 @@ export enum NftStatus {
   ARCHIVED = 'archived',
 }
 
-export class UpdateNftStatusDto {
+export class NftUpdateStatusDto {
   status: NftStatus;
 }
 
-export class UpdateNftRatingDto {
+export class NftUpdateRatingDto {
   rate: number;
 }
 
-export class NftDto {
-  @ApiProperty({ example: 'TODO' })
-  @IsUUID()
-  @IsNotEmpty()
-  id: string;
-
+export class NftCreateDto {
   @ApiProperty({ example: 'TODO' })
   @IsNotEmpty()
   name: string;
@@ -38,6 +33,13 @@ export class NftDto {
   @ApiProperty({ example: 'TODO' })
   @IsNotEmpty()
   status: NftStatus;
+}
+
+export class NftDto extends NftCreateDto {
+  @ApiProperty({ example: 'TODO' })
+  @IsUUID()
+  @IsNotEmpty()
+  id: string;
 
   @ApiProperty({ example: 'TODO' })
   @IsPositive()
