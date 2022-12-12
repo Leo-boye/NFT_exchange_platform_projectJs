@@ -15,7 +15,6 @@ import {
   CollectionDto,
   CollectionUpdateDto,
 } from './dtos/collections';
-import { StatusDto } from '../common/dtos/status';
 
 @Controller('collections')
 @ApiTags('Collections management')
@@ -39,18 +38,6 @@ export class CollectionsController {
   async updateCollection(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() collection: CollectionUpdateDto,
-  ): Promise<CollectionDto> {
-    // TODO
-    throw new NotImplementedException();
-  }
-
-  @Patch('status/:id')
-  @ApiResponse({ status: 200, type: CollectionDto })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
-  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
-  async updateCollectionStatus(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() collectionStatus: StatusDto,
   ): Promise<CollectionDto> {
     // TODO
     throw new NotImplementedException();
