@@ -1,9 +1,58 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  NotImplementedException,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { CollectionsService } from './collections.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ErrorBadRequestDto, ErrorNotFoundDto } from '../common/dtos/errors';
+import {
+  CollectionCreateDto,
+  CollectionDto,
+  CollectionUpdateDto,
+} from './dtos/collections';
+import { StatusDto } from '../common/dtos/status';
 
 @Controller('collections')
 @ApiTags('Collections management')
 export class CollectionsController {
   constructor(private readonly collectionsService: CollectionsService) {}
+
+  @Post('')
+  @ApiResponse({ status: 200, type: CollectionDto })
+  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  async createCollection(
+    @Body() collection: CollectionCreateDto,
+  ): Promise<CollectionDto> {
+    // TODO
+    throw new NotImplementedException();
+  }
+
+  @Patch(':id')
+  @ApiResponse({ status: 200, type: CollectionDto })
+  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
+  async updateCollection(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() collection: CollectionUpdateDto,
+  ): Promise<CollectionDto> {
+    // TODO
+    throw new NotImplementedException();
+  }
+
+  @Patch('status/:id')
+  @ApiResponse({ status: 200, type: CollectionDto })
+  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
+  async updateCollectionStatus(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() collectionStatus: StatusDto,
+  ): Promise<CollectionDto> {
+    // TODO
+    throw new NotImplementedException();
+  }
 }

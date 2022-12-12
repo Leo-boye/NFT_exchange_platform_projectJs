@@ -1,18 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsPositive, IsUrl, IsUUID } from 'class-validator';
-
-export enum NftStatus {
-  DRAFT = 'draft',
-  PUBLISHED = 'published',
-  ARCHIVED = 'archived',
-}
-
-export class NftUpdateStatusDto {
-  status: NftStatus;
-}
+import { Status } from '../../common/dtos/status';
 
 export class NftUpdateRatingDto {
+  @ApiProperty({ example: 'TODO' })
+  @IsPositive()
+  @IsNotEmpty()
   rate: number;
+}
+
+export class NftUpdateCollectionDto {
+  @ApiProperty({ example: 'TODO' })
+  @IsUUID()
+  @IsNotEmpty()
+  collectionId: string;
 }
 
 export class NftCreateDto {
@@ -32,7 +33,7 @@ export class NftCreateDto {
 
   @ApiProperty({ example: 'TODO' })
   @IsNotEmpty()
-  status: NftStatus;
+  status: Status;
 }
 
 export class NftDto extends NftCreateDto {

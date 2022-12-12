@@ -13,9 +13,10 @@ import { ErrorBadRequestDto, ErrorNotFoundDto } from '../common/dtos/errors';
 import {
   NftCreateDto,
   NftDto,
+  NftUpdateCollectionDto,
   NftUpdateRatingDto,
-  NftUpdateStatusDto,
 } from './dtos/nfts';
+import { StatusDto } from '../common/dtos/status';
 
 @Controller('nfts')
 @ApiTags('NFTs management')
@@ -36,7 +37,7 @@ export class nftsController {
   @ApiResponse({ status: 404, type: ErrorNotFoundDto })
   async updateNftStatus(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() nftStatus: NftUpdateStatusDto,
+    @Body() nftStatus: StatusDto,
   ): Promise<NftDto> {
     // TODO
     throw new NotImplementedException();
@@ -49,6 +50,18 @@ export class nftsController {
   async rateNft(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() nftRating: NftUpdateRatingDto,
+  ): Promise<NftDto> {
+    // TODO
+    throw new NotImplementedException();
+  }
+
+  @Patch('collection/:id')
+  @ApiResponse({ status: 200, type: NftDto })
+  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
+  async setNftCollection(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() nftCollection: NftUpdateCollectionDto,
   ): Promise<NftDto> {
     // TODO
     throw new NotImplementedException();
