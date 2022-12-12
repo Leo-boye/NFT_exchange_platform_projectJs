@@ -9,11 +9,11 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserCreatedDto, UserCreateDto } from './dtos/users';
 import { BadRequestErrorDto } from '../common/dtos/errors';
 
-@Controller()
+@Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('/users')
+  @Post('')
   @ApiTags('Users management')
   @ApiResponse({ status: 200, type: UserCreatedDto })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })

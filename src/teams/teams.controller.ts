@@ -11,11 +11,11 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BadRequestErrorDto } from '../common/dtos/errors';
 import { TeamCreateDto, TeamDto } from './dtos/teams';
 
-@Controller()
+@Controller('teams')
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
 
-  @Post('/teams/create')
+  @Post('create')
   @ApiTags('Teams management')
   @ApiResponse({ status: 200, type: TeamDto })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })
@@ -24,7 +24,7 @@ export class TeamsController {
     throw new NotImplementedException();
   }
 
-  @Post('/teams/invite/:id')
+  @Post('invite/:id')
   @ApiTags('Teams management')
   @ApiResponse({ status: 200, type: Boolean })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })
@@ -35,7 +35,7 @@ export class TeamsController {
     throw new NotImplementedException();
   }
 
-  @Post('/teams/add/:id')
+  @Post('add/:id')
   @ApiTags('Teams management')
   @ApiResponse({ status: 200, type: Boolean })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })

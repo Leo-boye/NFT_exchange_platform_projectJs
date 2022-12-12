@@ -7,11 +7,11 @@ import {
 import { AppController } from './app.controller';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { AppService } from './app.service';
-import { NftModule } from './nft/nft.module';
+import { NftsModule } from './nfts/nfts.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
-import { CollectionModule } from './collection/collection.module';
+import { CollectionsModule } from './collections/collections.module';
 import Constants from './auth/constants';
 import { TeamsModule } from './teams/teams.module';
 
@@ -22,10 +22,10 @@ import { TeamsModule } from './teams/teams.module';
       isGlobal: true,
     }),
     AuthModule,
-    UsersModule,
+    CollectionsModule,
+    NftsModule,
     TeamsModule,
-    NftModule,
-    CollectionModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
