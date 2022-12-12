@@ -13,6 +13,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { CollectionModule } from './collection/collection.module';
 import Constants from './auth/constants';
+import { TeamsModule } from './teams/teams.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import Constants from './auth/constants';
     }),
     AuthModule,
     UsersModule,
+    TeamsModule,
     NftModule,
     CollectionModule,
   ],
