@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsPositive, IsUrl, IsUUID } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsPositive, IsUUID } from 'class-validator';
 import { Status } from '../../common/dtos/status';
 import { Type } from 'class-transformer';
 
@@ -16,10 +16,8 @@ export class NftCreateDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ example: 'TODO' })
-  @IsUrl()
-  @IsNotEmpty()
-  image: string;
+  @ApiProperty({ type: 'string', format: 'binary', example: 'TODO' })
+  file: Express.Multer.File;
 
   @ApiProperty({ example: 'TODO' })
   @Type(() => Number)

@@ -6,11 +6,16 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { NftsService } from './nfts.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorBadRequestDto, ErrorNotFoundDto } from '../common/dtos/errors';
 import { NftCreateDto, NftDto, NftRatingDto, NftUpdateDto } from './dtos/nfts';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { editFileName, imageFileFilter } from '../common/utils/file';
 
 @Controller('nfts')
 @ApiTags('NFTs management')
@@ -18,10 +23,26 @@ export class nftsController {
   constructor(private readonly nftsService: NftsService) {}
 
   @Post('')
+  @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorBadRequestDto })
-  async createNft(@Body() nft: NftCreateDto): Promise<NftDto> {
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './public/nfts/',
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    }),
+  )
+  async createNft(
+    @Body() nft: NftCreateDto,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<NftDto> {
+    // FIXME: file is save even if dto validator fails
     // TODO
+    console.log(nft);
+    console.log(file);
     throw new NotImplementedException();
   }
 
