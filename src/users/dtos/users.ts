@@ -32,7 +32,7 @@ export class UserDto extends UserCreateDto {
   @IsNotEmpty()
   role: UserRole;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: 'TODO', required: false })
   teamId?: string;
 
   @ApiProperty({ example: 'TODO' })

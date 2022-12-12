@@ -50,7 +50,7 @@ export class NftDto extends NftCreateDto {
   @IsNotEmpty()
   ownerId: string;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: 'TODO', required: false })
   @IsUUID()
   collectionId?: string;
 }

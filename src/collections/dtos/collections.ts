@@ -7,7 +7,7 @@ export class CollectionCreateDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: 'TODO', required: false })
   @IsUrl()
   logo?: string;
 
