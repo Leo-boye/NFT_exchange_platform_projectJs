@@ -36,6 +36,7 @@ export class TeamsController {
     throw new NotImplementedException();
   }
 
+  // TODO: setup route as admin only route
   @Patch('add/:id')
   @ApiTags('Teams management')
   @ApiResponse({ status: 200, type: Boolean })
