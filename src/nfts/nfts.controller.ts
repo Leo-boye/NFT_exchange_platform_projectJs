@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { NftsService } from './nfts.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { BadRequestErrorDto, NotFoundErrorDto } from '../common/dtos/errors';
+import { ErrorBadRequestDto, ErrorNotFoundDto } from '../common/dtos/errors';
 import {
   NftCreateDto,
   NftDto,
@@ -24,7 +24,7 @@ export class nftsController {
 
   @Post('')
   @ApiResponse({ status: 200, type: NftDto })
-  @ApiResponse({ status: 400, type: BadRequestErrorDto })
+  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
   async createNft(@Body() nft: NftCreateDto): Promise<NftDto> {
     // TODO
     throw new NotImplementedException();
@@ -32,8 +32,8 @@ export class nftsController {
 
   @Patch('status/:id')
   @ApiResponse({ status: 200, type: NftDto })
-  @ApiResponse({ status: 400, type: BadRequestErrorDto })
-  @ApiResponse({ status: 404, type: NotFoundErrorDto })
+  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
   async updateNftStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() nftStatus: NftUpdateStatusDto,
@@ -44,8 +44,8 @@ export class nftsController {
 
   @Patch('rate/:id')
   @ApiResponse({ status: 200, type: NftDto })
-  @ApiResponse({ status: 400, type: BadRequestErrorDto })
-  @ApiResponse({ status: 404, type: NotFoundErrorDto })
+  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
   async rateNft(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() nftRating: NftUpdateRatingDto,
@@ -56,8 +56,8 @@ export class nftsController {
 
   @Patch('sold/:id')
   @ApiResponse({ status: 200, type: NftDto })
-  @ApiResponse({ status: 400, type: BadRequestErrorDto })
-  @ApiResponse({ status: 404, type: NotFoundErrorDto })
+  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
   async soldNft(@Param('id', ParseUUIDPipe) id: string): Promise<NftDto> {
     // TODO
     throw new NotImplementedException();

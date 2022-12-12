@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class BadRequestErrorDto {
+export class ErrorBadRequestDto {
   @ApiProperty({ example: '400' })
   statusCode: number;
 
@@ -11,7 +11,7 @@ export class BadRequestErrorDto {
   error: string;
 }
 
-export class NotFoundErrorDto {
+export class ErrorNotFoundDto {
   @ApiProperty({ example: '404' })
   statusCode: number;
 
