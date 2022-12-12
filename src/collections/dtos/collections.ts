@@ -1,6 +1,6 @@
 import { Status } from '../../common/dtos/status';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsUrl, IsUUID } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsUrl, IsUUID } from 'class-validator';
 
 export class CollectionCreateDto {
   @ApiProperty({ example: 'TODO' })
@@ -12,6 +12,7 @@ export class CollectionCreateDto {
   logo?: string;
 
   @ApiProperty({ example: 'TODO' })
+  @IsEnum(Status)
   @IsNotEmpty()
   status: Status;
 }
