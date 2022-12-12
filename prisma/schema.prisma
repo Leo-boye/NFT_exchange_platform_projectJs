@@ -38,8 +38,8 @@ model Nft {
   status       Status      @default(DRAFT)
   rating       Int         @default(0)
   rating_count Int         @default(0)
-  owner        User        @relation(fields: [userId], references: [id])
-  userId       String
+  owner        User        @relation(fields: [ownerId], references: [id])
+  ownerId      String
   Collection   Collection? @relation(fields: [collectionId], references: [id])
   collectionId String?
 }
