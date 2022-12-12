@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { BadRequestErrorDto } from '../common/dtos/errors';
+import { BadRequestErrorDto, NotFoundErrorDto } from '../common/dtos/errors';
 import { TeamCreateDto, TeamDto } from './dtos/teams';
 
 @Controller('teams')
@@ -29,6 +29,7 @@ export class TeamsController {
   @ApiTags('Teams management')
   @ApiResponse({ status: 200, type: Boolean })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })
+  @ApiResponse({ status: 404, type: NotFoundErrorDto })
   async inviteUserOnTeam(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<boolean> {
@@ -41,6 +42,7 @@ export class TeamsController {
   @ApiTags('Teams management')
   @ApiResponse({ status: 200, type: Boolean })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })
+  @ApiResponse({ status: 404, type: NotFoundErrorDto })
   async addUserOnTeam(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<boolean> {
