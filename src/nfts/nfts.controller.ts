@@ -18,11 +18,11 @@ import {
 } from './dtos/nfts';
 
 @Controller('nfts')
+@ApiTags('NFTs management')
 export class nftsController {
   constructor(private readonly nftsService: NftsService) {}
 
   @Post('')
-  @ApiTags('NFTs management')
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })
   async createNft(@Body() nft: NftCreateDto): Promise<NftDto> {
@@ -31,7 +31,6 @@ export class nftsController {
   }
 
   @Patch('status/:id')
-  @ApiTags('NFTs management')
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })
   @ApiResponse({ status: 404, type: NotFoundErrorDto })
@@ -44,7 +43,6 @@ export class nftsController {
   }
 
   @Patch('rate/:id')
-  @ApiTags('NFTs management')
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })
   @ApiResponse({ status: 404, type: NotFoundErrorDto })
@@ -57,7 +55,6 @@ export class nftsController {
   }
 
   @Patch('sold/:id')
-  @ApiTags('NFTs management')
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })
   @ApiResponse({ status: 404, type: NotFoundErrorDto })

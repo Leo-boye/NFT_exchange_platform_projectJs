@@ -10,11 +10,11 @@ import { UserCreatedDto, UserCreateDto } from './dtos/users';
 import { BadRequestErrorDto } from '../common/dtos/errors';
 
 @Controller('users')
+@ApiTags('Users management')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('')
-  @ApiTags('Users management')
   @ApiResponse({ status: 200, type: UserCreatedDto })
   @ApiResponse({ status: 400, type: BadRequestErrorDto })
   async createUser(@Body() user: UserCreateDto): Promise<UserCreatedDto> {
