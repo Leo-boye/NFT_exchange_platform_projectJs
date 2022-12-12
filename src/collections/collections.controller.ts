@@ -31,12 +31,12 @@ export class CollectionsController {
     throw new NotImplementedException();
   }
 
-  @Patch(':id')
+  @Patch(':collectionId')
   @ApiResponse({ status: 200, type: CollectionDto })
   @ApiResponse({ status: 400, type: ErrorBadRequestDto })
   @ApiResponse({ status: 404, type: ErrorNotFoundDto })
   async updateCollection(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('collectionId', ParseUUIDPipe) id: string,
     @Body() collection: CollectionUpdateDto,
   ): Promise<CollectionDto> {
     // TODO

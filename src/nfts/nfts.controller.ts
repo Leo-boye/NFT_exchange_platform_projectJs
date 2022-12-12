@@ -25,35 +25,35 @@ export class nftsController {
     throw new NotImplementedException();
   }
 
-  @Patch(':id')
+  @Patch(':nftId')
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorBadRequestDto })
   @ApiResponse({ status: 404, type: ErrorNotFoundDto })
   async updateNft(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('nftId', ParseUUIDPipe) id: string,
     @Body() nft: NftUpdateDto,
   ): Promise<NftDto> {
     // TODO
     throw new NotImplementedException();
   }
 
-  @Patch('rate/:id')
+  @Patch('rate/:nftId')
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorBadRequestDto })
   @ApiResponse({ status: 404, type: ErrorNotFoundDto })
   async rateNft(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('nftId', ParseUUIDPipe) id: string,
     @Body() nftRating: NftRatingDto,
   ): Promise<NftDto> {
     // TODO
     throw new NotImplementedException();
   }
 
-  @Patch('sold/:id')
+  @Patch('sold/:nftId')
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorBadRequestDto })
   @ApiResponse({ status: 404, type: ErrorNotFoundDto })
-  async soldNft(@Param('id', ParseUUIDPipe) id: string): Promise<NftDto> {
+  async soldNft(@Param('nftId', ParseUUIDPipe) id: string): Promise<NftDto> {
     // TODO
     throw new NotImplementedException();
   }

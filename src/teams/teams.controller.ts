@@ -25,24 +25,24 @@ export class TeamsController {
     throw new NotImplementedException();
   }
 
-  @Patch('invite/:id')
+  @Patch('invite/:userId')
   @ApiResponse({ status: 200, type: Boolean })
   @ApiResponse({ status: 400, type: ErrorBadRequestDto })
   @ApiResponse({ status: 404, type: ErrorNotFoundDto })
   async inviteUserOnTeam(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('userId', ParseUUIDPipe) id: string,
   ): Promise<boolean> {
     // TODO
     throw new NotImplementedException();
   }
 
   // TODO: setup route as admin only route
-  @Patch('add/:id')
+  @Patch('add/:userId')
   @ApiResponse({ status: 200, type: Boolean })
   @ApiResponse({ status: 400, type: ErrorBadRequestDto })
   @ApiResponse({ status: 404, type: ErrorNotFoundDto })
   async addUserOnTeam(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('userId', ParseUUIDPipe) id: string,
   ): Promise<boolean> {
     // TODO
     throw new NotImplementedException();
