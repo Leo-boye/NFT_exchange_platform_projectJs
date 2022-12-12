@@ -12,7 +12,7 @@ export class NftRatingDto {
 }
 
 export class NftCreateDto {
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: 'user' })
   @IsNotEmpty()
   name: string;
 
@@ -21,13 +21,13 @@ export class NftCreateDto {
   @IsNotEmpty()
   image: string;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: '100' })
   @Type(() => Number)
   @IsPositive()
   @IsNotEmpty()
   price: number;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ default: 'draft', example: 'TODO' })
   @IsEnum(Status)
   @IsNotEmpty()
   status: Status;

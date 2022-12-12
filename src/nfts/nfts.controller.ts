@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   NotImplementedException,
   Param,
   ParseUUIDPipe,
@@ -10,19 +11,36 @@ import {
 import { NftsService } from './nfts.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorBadRequestDto, ErrorNotFoundDto } from '../common/dtos/errors';
-import { NftCreateDto, NftDto, NftRatingDto, NftUpdateDto } from './dtos/nfts';
+import { NftDto, NftRatingDto, NftUpdateDto } from './dtos/nfts';
+import { Nft } from '@prisma/client';
+import { CreateNftDto } from './dtos/create-nft.dto';
 
 @Controller('nfts')
 @ApiTags('NFTs management')
 export class nftsController {
   constructor(private readonly nftsService: NftsService) {}
 
-  @Post('')
+  @Get()
+  @ApiResponse({ status: 200, type: Array<NftDto> })
+  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  async getAllNft(): Promise<Nft[]> {
+    return this.nftsService.getAllNft({});
+  }
+
+  @Get(':nftID')
+  @ApiResponse({ status: 200, type: Array<NftDto> })
+  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  async getNft(
+    @Param('nftId', ParseUUIDPipe) nftID: string,
+  ): Promise<Array<NftDto>> {
+    throw new NotImplementedException();
+  }
+
+  @Post()
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorBadRequestDto })
-  async createNft(@Body() nft: NftCreateDto): Promise<NftDto> {
-    // TODO
-    throw new NotImplementedException();
+  async createNft(@Body() nft: CreateNftDto): Promise<Nft> {
+    return this.nftsService.createNft(nft);
   }
 
   @Patch(':nftId')
