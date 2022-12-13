@@ -59,6 +59,7 @@ export class TeamsController {
     example: '59c78745-aa9e-4930-b338-214aff8b07be',
   })
   @ApiResponse({ status: 200, type: TeamDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 404, type: ErrorRequestDto })
   async getTeamById(
     @Param('teamId', ParseUUIDPipe) teamId: string,
