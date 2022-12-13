@@ -69,7 +69,7 @@ export class TeamsController {
     throw new NotFoundException('Team ID not found');
   }
 
-  @Post('')
+  @Post()
   @ApiOperation({
     description: 'Create team, add user on it and set user as team leader',
   })
