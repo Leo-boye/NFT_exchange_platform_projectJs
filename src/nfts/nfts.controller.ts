@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { NftsService } from './nfts.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ErrorBadRequestDto, ErrorNotFoundDto } from '../common/dtos/errors';
+import { ErrorRequestDto } from '../common/dtos/errors';
 import { NftDto, NftRatingDto, NftUpdateDto } from './dtos/nfts';
 import { Nft } from '@prisma/client';
 import { CreateNftDto } from './dtos/create-nft.dto';
@@ -23,14 +23,14 @@ export class nftsController {
   // FIXME: do not return Prisma type "Nft"
   @Get('')
   @ApiResponse({ status: 200, type: Array<Nft> })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
   async getAllNft(): Promise<Array<Nft>> {
     return this.nftsService.getAllNft({});
   }
 
   @Get(':nftId')
   @ApiResponse({ status: 200, type: Array<NftDto> })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
   async getNft(
     @Param('nftId', ParseUUIDPipe) nftId: string,
   ): Promise<Array<NftDto>> {
@@ -40,15 +40,15 @@ export class nftsController {
 
   @Post('')
   @ApiResponse({ status: 200, type: NftDto })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
   async createNft(@Body() nft: CreateNftDto): Promise<Nft> {
     return this.nftsService.createNft(nft);
   }
 
   @Patch(':nftId')
   @ApiResponse({ status: 200, type: NftDto })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
-  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
+  @ApiResponse({ status: 404, type: ErrorRequestDto })
   async updateNft(
     @Param('nftId', ParseUUIDPipe) id: string,
     @Body() nft: NftUpdateDto,
@@ -59,8 +59,8 @@ export class nftsController {
 
   @Patch('rate/:nftId')
   @ApiResponse({ status: 200, type: NftDto })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
-  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
+  @ApiResponse({ status: 404, type: ErrorRequestDto })
   async rateNft(
     @Param('nftId', ParseUUIDPipe) id: string,
     @Body() nftRating: NftRatingDto,
@@ -71,8 +71,8 @@ export class nftsController {
 
   @Patch('sold/:nftId')
   @ApiResponse({ status: 200, type: NftDto })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
-  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
+  @ApiResponse({ status: 404, type: ErrorRequestDto })
   async soldNft(@Param('nftId', ParseUUIDPipe) id: string): Promise<NftDto> {
     // TODO
     throw new NotImplementedException();

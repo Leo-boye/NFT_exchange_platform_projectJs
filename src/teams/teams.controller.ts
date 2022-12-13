@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ErrorBadRequestDto, ErrorNotFoundDto } from '../common/dtos/errors';
+import { ErrorRequestDto } from '../common/dtos/errors';
 import { TeamCreateDto, TeamDto } from './dtos/teams';
 
 @Controller('teams')
@@ -19,7 +19,7 @@ export class TeamsController {
 
   @Post('')
   @ApiResponse({ status: 200, type: TeamDto })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
   async createTeam(@Body() team: TeamCreateDto): Promise<TeamDto> {
     // TODO
     throw new NotImplementedException();
@@ -27,8 +27,8 @@ export class TeamsController {
 
   @Patch('invite/:userId')
   @ApiResponse({ status: 200, type: Boolean })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
-  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
+  @ApiResponse({ status: 404, type: ErrorRequestDto })
   async inviteUserOnTeam(
     @Param('userId', ParseUUIDPipe) id: string,
   ): Promise<boolean> {
@@ -39,8 +39,8 @@ export class TeamsController {
   // TODO: setup route as admin only route
   @Patch('add/:userId')
   @ApiResponse({ status: 200, type: Boolean })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
-  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
+  @ApiResponse({ status: 404, type: ErrorRequestDto })
   async addUserOnTeam(
     @Param('userId', ParseUUIDPipe) id: string,
   ): Promise<boolean> {

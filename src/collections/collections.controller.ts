@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { CollectionsService } from './collections.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ErrorBadRequestDto, ErrorNotFoundDto } from '../common/dtos/errors';
+import { ErrorRequestDto } from '../common/dtos/errors';
 import {
   CollectionCreateDto,
   CollectionDto,
@@ -23,7 +23,7 @@ export class CollectionsController {
 
   @Post('')
   @ApiResponse({ status: 200, type: CollectionDto })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
   async createCollection(
     @Body() collection: CollectionCreateDto,
   ): Promise<CollectionDto> {
@@ -33,8 +33,8 @@ export class CollectionsController {
 
   @Patch(':collectionId')
   @ApiResponse({ status: 200, type: CollectionDto })
-  @ApiResponse({ status: 400, type: ErrorBadRequestDto })
-  @ApiResponse({ status: 404, type: ErrorNotFoundDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
+  @ApiResponse({ status: 404, type: ErrorRequestDto })
   async updateCollection(
     @Param('collectionId', ParseUUIDPipe) id: string,
     @Body() collection: CollectionUpdateDto,
