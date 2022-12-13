@@ -19,7 +19,8 @@ export class NftStatusDto {
 }
 
 export class NftRatingDto {
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: '2.5' })
+  @ApiProperty({ example: '2.5' })
   @Type(() => Number)
   @Min(1)
   @Max(5)
@@ -28,11 +29,11 @@ export class NftRatingDto {
 }
 
 export class NftCreateDto {
-  @ApiProperty({ example: 'user' })
+  @ApiProperty({ example: 'My super NFT' })
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: 'FIXME' })
   @IsUrl()
   @IsNotEmpty()
   image: string;
@@ -43,36 +44,39 @@ export class NftCreateDto {
   @IsNotEmpty()
   price: number;
 
-  @ApiProperty({ default: 'draft', example: 'TODO' })
+  @ApiProperty({ example: 'DRAFT' })
   @IsEnum(Status)
   @IsNotEmpty()
   status: Status;
 }
 
 export class NftDto extends NftCreateDto {
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: '59c78745-aa9e-4930-b338-214aff8b07be' })
   @IsUUID()
   @IsNotEmpty()
   id: string;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: '2.5' })
   @Type(() => Number)
   @IsPositive()
   @IsNotEmpty()
   rating: number;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: '42' })
   @Type(() => Number)
   @IsPositive()
   @IsNotEmpty()
   ratingCount: number;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: '59c78745-aa9e-4930-b338-214aff8b07be' })
   @IsUUID()
   @IsNotEmpty()
   ownerId: string;
 
-  @ApiProperty({ example: 'TODO', required: false })
+  @ApiProperty({
+    example: '59c78745-aa9e-4930-b338-214aff8b07be',
+    required: false,
+  })
   @IsUUID()
   collectionId?: string;
 }
