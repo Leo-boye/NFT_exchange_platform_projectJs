@@ -19,26 +19,29 @@ export class UserCreateDto {
 }
 
 export class UserDto extends UserCreateDto {
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: '59c78745-aa9e-4930-b338-214aff8b07be' })
   @IsUUID()
   @IsNotEmpty()
   id: string;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: 'BASIC' })
   @IsEnum(UserRole)
   @IsNotEmpty()
   role: UserRole;
 
-  @ApiProperty({ example: 'TODO', required: false })
+  @ApiProperty({
+    example: '59c78745-aa9e-4930-b338-214aff8b07be',
+    required: false,
+  })
   teamId?: string;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: 'false' })
   @IsNotEmpty()
   isTeamOwner: boolean;
 }
 
 export class UserWithPasswordDto extends UserDto {
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: 'MyStr0ngP@ssw0rd' })
   @IsNotEmpty()
   password: string;
 }
