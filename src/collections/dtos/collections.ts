@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Status } from '@prisma/client';
-import { IsEnum, IsNotEmpty, IsUrl, IsUUID } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CollectionCreateDto {
   @ApiProperty({ example: 'TODO' })
@@ -8,7 +8,6 @@ export class CollectionCreateDto {
   name: string;
 
   @ApiProperty({ example: 'TODO', required: false })
-  @IsUrl()
   logo?: string;
 
   @ApiProperty({ example: 'TODO' })

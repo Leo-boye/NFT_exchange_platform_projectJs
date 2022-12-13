@@ -1,14 +1,17 @@
 import {
   Body,
   Controller,
-  NotImplementedException,
+  DefaultValuePipe,
+  Get,
   Param,
+  ParseIntPipe,
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CollectionsService } from './collections.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorRequestDto } from '../common/dtos/errors';
 import {
   CollectionCreateDto,
@@ -21,14 +24,25 @@ import {
 export class CollectionsController {
   constructor(private readonly collectionsService: CollectionsService) {}
 
-  @Post('')
+  @Get()
+  @ApiQuery({ name: 'offset', required: false, example: 0 })
+  @ApiQuery({ name: 'limit', required: false, example: 100 })
+  @ApiResponse({ status: 201, type: CollectionDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
+  async getCollection(
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+    @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
+  ): Promise<CollectionDto[]> {
+    return this.collectionsService.getAllCollection(offset, limit);
+  }
+
+  @Post()
   @ApiResponse({ status: 201, type: CollectionDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   async createCollection(
     @Body() collection: CollectionCreateDto,
   ): Promise<CollectionDto> {
-    // TODO
-    throw new NotImplementedException();
+    return this.collectionsService.createCollection(collection);
   }
 
   @Patch(':collectionId')
@@ -40,6 +54,6 @@ export class CollectionsController {
     @Body() collection: CollectionUpdateDto,
   ): Promise<CollectionDto> {
     // TODO
-    throw new NotImplementedException();
+    return this.collectionsService.updateCollection(collection, id);
   }
 }
