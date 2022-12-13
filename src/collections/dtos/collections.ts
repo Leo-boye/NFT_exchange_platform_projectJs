@@ -1,5 +1,5 @@
-import { Status } from '../../common/dtos/status';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { Status } from '@prisma/client';
 import { IsEnum, IsNotEmpty, IsUrl, IsUUID } from 'class-validator';
 
 export class CollectionCreateDto {

@@ -1,60 +1,108 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
+  NotFoundException,
   NotImplementedException,
   Param,
+  ParseIntPipe,
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { NftsService } from './nfts.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ErrorRequestDto } from '../common/dtos/errors';
-import { NftDto, NftRatingDto, NftUpdateDto } from './dtos/nfts';
-import { Nft } from '@prisma/client';
-import { CreateNftDto } from './dtos/create-nft.dto';
+import { NftCreateDto, NftDto, NftRatingDto, NftStatusDto } from './dtos/nfts';
 
 @Controller('nfts')
 @ApiTags('NFTs management')
 export class nftsController {
   constructor(private readonly nftsService: NftsService) {}
 
-  // FIXME: do not return Prisma type "Nft"
   @Get('')
-  @ApiResponse({ status: 200, type: Array<Nft> })
-  @ApiResponse({ status: 400, type: ErrorRequestDto })
-  async getAllNft(): Promise<Array<Nft>> {
-    return this.nftsService.getAllNft({});
+  @ApiOperation({
+    summary: 'ADMIN ONLY',
+    description: 'Get all nfts',
+  })
+  @ApiQuery({ name: 'offset', required: false, example: 0 })
+  @ApiQuery({ name: 'limit', required: false, example: 100 })
+  @ApiResponse({ status: 200, type: Array<NftDto> })
+  async getAllNft(
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+    @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
+  ): Promise<Array<NftDto>> {
+    return this.nftsService.getAllNfts(offset, limit);
   }
 
   @Get(':nftId')
-  @ApiResponse({ status: 200, type: Array<NftDto> })
-  @ApiResponse({ status: 400, type: ErrorRequestDto })
-  async getNft(
-    @Param('nftId', ParseUUIDPipe) nftId: string,
-  ): Promise<Array<NftDto>> {
-    // TODO
-    throw new NotImplementedException();
-  }
-
-  @Post('')
-  @ApiResponse({ status: 201, type: NftDto })
-  @ApiResponse({ status: 400, type: ErrorRequestDto })
-  async createNft(@Body() nft: CreateNftDto): Promise<Nft> {
-    return this.nftsService.createNft(nft);
-  }
-
-  @Patch(':nftId')
+  @ApiOperation({
+    summary: 'ADMIN ONLY',
+    description: 'Get nft from ID',
+  })
+  @ApiParam({
+    name: 'nftId',
+    required: true,
+    allowEmptyValue: false,
+    example: '59c78745-aa9e-4930-b338-214aff8b07be',
+  })
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 404, type: ErrorRequestDto })
-  async updateNft(
-    @Param('nftId', ParseUUIDPipe) id: string,
-    @Body() nft: NftUpdateDto,
+  async getNftById(
+    @Param('nftId', ParseUUIDPipe) nftId: string,
   ): Promise<NftDto> {
-    // TODO
-    throw new NotImplementedException();
+    const res = await this.nftsService.getNftById(nftId);
+    if (res) return res;
+    throw new NotFoundException('NFT ID not found');
+  }
+
+  @Post('')
+  @ApiOperation({
+    description: 'Create nft and set user as owner of this nft',
+  })
+  @ApiResponse({ status: 201, type: NftDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
+  @ApiResponse({ status: 409, type: ErrorRequestDto })
+  async createNft(@Body() nft: NftCreateDto): Promise<NftDto> {
+    // FIXME
+    const userId = 'c6365738-7d4b-4ae3-b638-93542288f500';
+    return this.nftsService.createNft(nft, userId);
+  }
+
+  @Patch(':nftId')
+  @ApiOperation({
+    summary: 'ADMIN ONLY',
+    description: 'Update nft status',
+  })
+  @ApiParam({
+    name: 'nftId',
+    required: true,
+    allowEmptyValue: false,
+    example: '59c78745-aa9e-4930-b338-214aff8b07be',
+  })
+  @ApiResponse({ status: 200, type: NftDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
+  @ApiResponse({ status: 404, type: ErrorRequestDto })
+  @ApiResponse({ status: 409, type: ErrorRequestDto })
+  async updateNftStatus(
+    @Param('nftId', ParseUUIDPipe) nftId: string,
+    @Body() nftStatus: NftStatusDto,
+  ): Promise<NftDto> {
+    const nft = await this.nftsService.getNftById(nftId);
+    if (!nft) throw new NotFoundException('NFT ID not found');
+    if (nftStatus.status < nft.status)
+      throw new BadRequestException('Cannot downgrade status');
+    return this.nftsService.updateNftStatus(nftId, nftStatus.status);
   }
 
   @Patch('rate/:nftId')

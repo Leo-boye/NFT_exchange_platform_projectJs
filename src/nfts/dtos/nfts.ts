@@ -1,7 +1,14 @@
-import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsPositive, IsUrl, IsUUID } from 'class-validator';
-import { Status } from '../../common/dtos/status';
 import { Type } from 'class-transformer';
+import { Status } from '@prisma/client';
+
+export class NftStatusDto {
+  @ApiProperty({ example: 'DRAFT' })
+  @IsEnum(Status)
+  @IsNotEmpty()
+  status: Status;
+}
 
 export class NftRatingDto {
   @ApiProperty({ example: 'TODO' })
@@ -60,7 +67,3 @@ export class NftDto extends NftCreateDto {
   @IsUUID()
   collectionId?: string;
 }
-
-export class NftUpdateDto extends PartialType(
-  PickType(NftDto, ['status', 'collectionId']),
-) {}

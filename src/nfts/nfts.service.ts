@@ -1,36 +1,41 @@
 import { Injectable } from '@nestjs/common';
-import { Nft, Prisma } from '@prisma/client';
-import { CreateNftDto } from './dtos/create-nft.dto';
+import { Status } from '@prisma/client';
 import { PrismaService } from '../common/utils/prisma.service';
+import { NftCreateDto, NftDto } from './dtos/nfts';
 
 @Injectable()
 export class NftsService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllNft(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<Nft[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.nft.findMany({ skip, take, cursor, where, orderBy });
+  async getAllNfts(offset: number, limit: number): Promise<Array<NftDto>> {
+    return await this.prisma.nft.findMany({
+      skip: offset,
+      take: limit,
+    });
   }
 
-  async createNft(nft: CreateNftDto): Promise<Nft> {
+  async getNftById(nftId: string): Promise<NftDto | null> {
+    return await this.prisma.nft.findUnique({
+      where: { id: nftId },
+    });
+  }
+
+  async createNft(nft: NftCreateDto, ownerId: string): Promise<NftDto> {
     return this.prisma.nft.create({
       data: {
         name: nft.name,
         image: nft.image,
         price: nft.price,
-        status: 'DRAFT',
-        owner: {
-          connect: {
-            id: nft.userId,
-          },
-        },
+        status: nft.status,
+        ownerId: ownerId,
       },
+    });
+  }
+
+  async updateNftStatus(nftId: string, status: Status): Promise<NftDto> {
+    return this.prisma.nft.update({
+      where: { id: nftId },
+      data: { status: status },
     });
   }
 }
