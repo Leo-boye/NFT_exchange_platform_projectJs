@@ -20,23 +20,25 @@ import { CreateNftDto } from './dtos/create-nft.dto';
 export class nftsController {
   constructor(private readonly nftsService: NftsService) {}
 
-  @Get()
-  @ApiResponse({ status: 200, type: Array<NftDto> })
+  // FIXME: do not return Prisma type "Nft"
+  @Get('')
+  @ApiResponse({ status: 200, type: Array<Nft> })
   @ApiResponse({ status: 400, type: ErrorBadRequestDto })
-  async getAllNft(): Promise<Nft[]> {
+  async getAllNft(): Promise<Array<Nft>> {
     return this.nftsService.getAllNft({});
   }
 
-  @Get(':nftID')
+  @Get(':nftId')
   @ApiResponse({ status: 200, type: Array<NftDto> })
   @ApiResponse({ status: 400, type: ErrorBadRequestDto })
   async getNft(
-    @Param('nftId', ParseUUIDPipe) nftID: string,
+    @Param('nftId', ParseUUIDPipe) nftId: string,
   ): Promise<Array<NftDto>> {
+    // TODO
     throw new NotImplementedException();
   }
 
-  @Post()
+  @Post('')
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorBadRequestDto })
   async createNft(@Body() nft: CreateNftDto): Promise<Nft> {

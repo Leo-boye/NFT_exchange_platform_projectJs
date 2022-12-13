@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { NftsService } from './nfts.service';
 import { nftsController } from './nfts.controller';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../common/utils/prisma.service';
 
 @Module({
   controllers: [nftsController],

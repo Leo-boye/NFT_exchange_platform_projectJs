@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../common/utils/prisma.service';
 import { CreateUserDto } from './dtos/create-user';
 
 // This should be a real class/interface representing a user entity

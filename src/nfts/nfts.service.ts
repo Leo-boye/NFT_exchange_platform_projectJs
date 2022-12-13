@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
 import { Nft, Prisma } from '@prisma/client';
 import { CreateNftDto } from './dtos/create-nft.dto';
+import { PrismaService } from '../common/utils/prisma.service';
 
 @Injectable()
 export class NftsService {
