@@ -63,6 +63,9 @@ export class UsersController {
   }
 
   @Post('')
+  @ApiOperation({
+    description: 'Create user',
+  })
   @ApiResponse({ status: 201, type: UserWithPasswordDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 409, type: ErrorRequestDto })
