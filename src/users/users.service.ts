@@ -42,4 +42,15 @@ export class UsersService {
       },
     });
   }
+
+  async updateTeamUser(userId: string, teamId: string): Promise<UserDto> {
+    console.log(userId);
+    console.log(teamId);
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        teamId: teamId,
+      },
+    });
+  }
 }
