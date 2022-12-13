@@ -1,10 +1,6 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsUUID, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-
-export enum UserRole {
-  ADMIN = 'ADMIN',
-  BASIC = 'BASIC',
-}
+import { UserRole } from '@prisma/client';
 
 export class UserCreateDto {
   @ApiProperty({ example: 'username' })
@@ -16,7 +12,7 @@ export class UserCreateDto {
   @IsEmail()
   email: string;
 
-  @ApiProperty({ example: 'TODO' })
+  @ApiProperty({ example: '0x58d7e25323715ba753f8221fc69ce75feb3a3245' })
   @IsNotEmpty()
   @Matches('^0x[a-fA-F0-9]{40}$')
   blockchainAddress: string;

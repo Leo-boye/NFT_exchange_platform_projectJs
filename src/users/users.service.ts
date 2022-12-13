@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../common/utils/prisma.service';
-import { CreateUserDto } from './dtos/create-user';
+import { generate } from 'generate-password';
+import { UserCreatedDto, UserCreateDto } from './dtos/users';
 
 // This should be a real class/interface representing a user entity
 export type User = any;
@@ -26,14 +27,19 @@ export class UsersService {
     return this.users.find((user) => user.username === username);
   }
 
-  createUser(user: CreateUserDto) {
-    const password = 'password';
-    return this.prisma.user.create({
+  async createUser(user: UserCreateDto): Promise<UserCreatedDto> {
+    const password = generate({
+      length: 16,
+      numbers: true,
+      symbols: true,
+      excludeSimilarCharacters: true,
+    });
+    return await this.prisma.user.create({
       data: {
         name: user.name,
         email: user.email,
-        blockchainAddress: user.blockchainAddress,
         password: password,
+        blockchainAddress: user.blockchainAddress,
       },
     });
   }
