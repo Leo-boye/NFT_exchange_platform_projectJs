@@ -18,7 +18,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserCreatedDto, UserCreateDto, UserDto } from './dtos/users';
+import { UserCreateDto, UserDto, UserWithPasswordDto } from './dtos/users';
 import { ErrorRequestDto } from '../common/dtos/errors';
 
 @Controller('users')
@@ -63,10 +63,10 @@ export class UsersController {
   }
 
   @Post('')
-  @ApiResponse({ status: 200, type: UserCreatedDto })
+  @ApiResponse({ status: 200, type: UserWithPasswordDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 409, type: ErrorRequestDto })
-  async createUser(@Body() user: UserCreateDto): Promise<UserCreatedDto> {
+  async createUser(@Body() user: UserCreateDto): Promise<UserWithPasswordDto> {
     return await this.usersService.createUser(user);
   }
 }

@@ -1,31 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../common/utils/prisma.service';
 import { generate } from 'generate-password';
-import { UserCreatedDto, UserCreateDto, UserDto } from './dtos/users';
-
-// This should be a real class/interface representing a user entity
-export type User = any;
+import { UserCreateDto, UserDto, UserWithPasswordDto } from './dtos/users';
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
-
   constructor(private prisma: PrismaService) {}
-
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.username === username);
-  }
 
   async getAllUsers(offset: number, limit: number): Promise<Array<UserDto>> {
     return await this.prisma.user.findMany({
@@ -40,7 +20,13 @@ export class UsersService {
     });
   }
 
-  async createUser(user: UserCreateDto): Promise<UserCreatedDto> {
+  async getUserCredentials(email: string): Promise<UserWithPasswordDto | null> {
+    return await this.prisma.user.findUnique({
+      where: { email: email },
+    });
+  }
+
+  async createUser(user: UserCreateDto): Promise<UserWithPasswordDto> {
     const password = generate({
       length: 16,
       numbers: true,

@@ -37,7 +37,7 @@ export class UserDto extends UserCreateDto {
   isTeamOwner: boolean;
 }
 
-export class UserCreatedDto extends UserDto {
+export class UserWithPasswordDto extends UserDto {
   @ApiProperty({ example: 'TODO' })
   @IsNotEmpty()
   password: string;
