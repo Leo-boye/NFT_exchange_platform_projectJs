@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsPositive, IsUrl, IsUUID } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsPositive,
+  IsUrl,
+  IsUUID,
+  Max,
+  Min,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { Status } from '@prisma/client';
 
@@ -13,7 +21,8 @@ export class NftStatusDto {
 export class NftRatingDto {
   @ApiProperty({ example: 'TODO' })
   @Type(() => Number)
-  @IsPositive()
+  @Min(1)
+  @Max(5)
   @IsNotEmpty()
   rate: number;
 }
@@ -56,7 +65,7 @@ export class NftDto extends NftCreateDto {
   @Type(() => Number)
   @IsPositive()
   @IsNotEmpty()
-  rating_count: number;
+  ratingCount: number;
 
   @ApiProperty({ example: 'TODO' })
   @IsUUID()

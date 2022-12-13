@@ -21,7 +21,7 @@ export class NftsService {
   }
 
   async createNft(nft: NftCreateDto, ownerId: string): Promise<NftDto> {
-    return this.prisma.nft.create({
+    return await this.prisma.nft.create({
       data: {
         name: nft.name,
         image: nft.image,
@@ -33,9 +33,30 @@ export class NftsService {
   }
 
   async updateNftStatus(nftId: string, status: Status): Promise<NftDto> {
-    return this.prisma.nft.update({
+    return await this.prisma.nft.update({
       where: { id: nftId },
       data: { status: status },
+    });
+  }
+
+  async updateNftRating(nftId: string, rating: number): Promise<NftDto | null> {
+    const nft = await this.getNftById(nftId);
+    if (!nft) return null;
+    const newRatingCount = nft.ratingCount + 1;
+    const newRating = (nft.rating * nft.ratingCount + rating) / newRatingCount;
+    return await this.prisma.nft.update({
+      where: { id: nftId },
+      data: {
+        rating: newRating,
+        ratingCount: newRatingCount,
+      },
+    });
+  }
+
+  async updateNftOwner(nftId: string, ownerId: string): Promise<NftDto> {
+    return await this.prisma.nft.update({
+      where: { id: nftId },
+      data: { ownerId: ownerId },
     });
   }
 }

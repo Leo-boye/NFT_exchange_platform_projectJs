@@ -27,10 +27,27 @@ export class TeamsService {
     });
   }
 
-  async updateTeamBalance(teamId: string, balance: number): Promise<TeamDto> {
+  async updateTeamBalance(
+    teamId: string,
+    balance: number,
+    operationType: 'replace' | 'add' | 'remove',
+  ): Promise<TeamDto> {
+    let data;
+    switch (operationType) {
+      case 'replace':
+        data = { balance: balance };
+        break;
+      case 'add':
+        data = { balance: { increment: balance } };
+        break;
+      case 'remove':
+        data = { balance: { decrement: balance } };
+        break;
+    }
+    // FIXME: check if balance < 0 with "remove" operation
     return await this.prisma.team.update({
       where: { id: teamId },
-      data: { balance: balance },
+      data: data,
     });
   }
 }

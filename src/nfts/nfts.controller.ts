@@ -5,7 +5,6 @@ import {
   DefaultValuePipe,
   Get,
   NotFoundException,
-  NotImplementedException,
   Param,
   ParseIntPipe,
   ParseUUIDPipe,
@@ -23,11 +22,15 @@ import {
 } from '@nestjs/swagger';
 import { ErrorRequestDto } from '../common/dtos/errors';
 import { NftCreateDto, NftDto, NftRatingDto, NftStatusDto } from './dtos/nfts';
+import { TeamsService } from '../teams/teams.service';
 
 @Controller('nfts')
 @ApiTags('NFTs management')
 export class nftsController {
-  constructor(private readonly nftsService: NftsService) {}
+  constructor(
+    private readonly nftsService: NftsService,
+    private readonly teamsService: TeamsService,
+  ) {}
 
   @Get('')
   @ApiOperation({
@@ -106,23 +109,44 @@ export class nftsController {
   }
 
   @Patch('rate/:nftId')
+  @ApiOperation({
+    description: 'Rate nft (1-5)',
+  })
+  @ApiParam({
+    name: 'nftId',
+    required: true,
+    allowEmptyValue: false,
+    example: '59c78745-aa9e-4930-b338-214aff8b07be',
+  })
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 404, type: ErrorRequestDto })
+  @ApiResponse({ status: 409, type: ErrorRequestDto })
   async rateNft(
-    @Param('nftId', ParseUUIDPipe) id: string,
+    @Param('nftId', ParseUUIDPipe) nftId: string,
     @Body() nftRating: NftRatingDto,
   ): Promise<NftDto> {
-    // TODO
-    throw new NotImplementedException();
+    const nft = await this.nftsService.getNftById(nftId);
+    if (!nft) throw new NotFoundException('NFT ID not found');
+    return await this.nftsService.updateNftRating(nftId, nftRating.rate);
   }
 
-  @Patch('sold/:nftId')
+  @Patch('buy/:nftId')
+  @ApiOperation({
+    description: 'Buy nft',
+  })
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 404, type: ErrorRequestDto })
-  async soldNft(@Param('nftId', ParseUUIDPipe) id: string): Promise<NftDto> {
-    // TODO
-    throw new NotImplementedException();
+  @ApiResponse({ status: 409, type: ErrorRequestDto })
+  async buyNft(@Param('nftId', ParseUUIDPipe) nftId: string): Promise<NftDto> {
+    const nft = await this.nftsService.getNftById(nftId);
+    if (!nft) throw new NotFoundException('NFT ID not found');
+    // FIXME
+    const userId = 'c6365738-7d4b-4ae3-b638-93542288f500';
+    const teamId = 'c6365738-7d4b-4ae3-b638-93542288f500'; // team of user
+    if (!teamId) throw new BadRequestException('User not in team');
+    await this.teamsService.updateTeamBalance(teamId, nft.price, 'remove');
+    return await this.nftsService.updateNftOwner(nftId, userId);
   }
 }

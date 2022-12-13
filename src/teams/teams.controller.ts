@@ -167,6 +167,7 @@ export class TeamsController {
     return await this.teamsService.updateTeamBalance(
       teamId,
       teamBalance.balance,
+      'replace',
     );
   }
 }
