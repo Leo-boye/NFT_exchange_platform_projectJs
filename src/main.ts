@@ -14,7 +14,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('NFT exchange platform')
     .setDescription(
-      'an API used for:\n' +
+      'An API used for:\n' +
         '- User management and authentication\n' +
         '- Collections management\n' +
         '- Fake NFT management',
