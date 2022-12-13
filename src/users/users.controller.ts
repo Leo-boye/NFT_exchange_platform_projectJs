@@ -63,7 +63,7 @@ export class UsersController {
   }
 
   @Post('')
-  @ApiResponse({ status: 200, type: UserWithPasswordDto })
+  @ApiResponse({ status: 201, type: UserWithPasswordDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 409, type: ErrorRequestDto })
   async createUser(@Body() user: UserCreateDto): Promise<UserWithPasswordDto> {

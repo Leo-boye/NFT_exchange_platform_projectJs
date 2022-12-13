@@ -18,7 +18,7 @@ export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
 
   @Post('')
-  @ApiResponse({ status: 200, type: TeamDto })
+  @ApiResponse({ status: 201, type: TeamDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   async createTeam(@Body() team: TeamCreateDto): Promise<TeamDto> {
     // TODO

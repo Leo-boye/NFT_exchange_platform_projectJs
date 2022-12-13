@@ -22,7 +22,7 @@ export class CollectionsController {
   constructor(private readonly collectionsService: CollectionsService) {}
 
   @Post('')
-  @ApiResponse({ status: 200, type: CollectionDto })
+  @ApiResponse({ status: 201, type: CollectionDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   async createCollection(
     @Body() collection: CollectionCreateDto,

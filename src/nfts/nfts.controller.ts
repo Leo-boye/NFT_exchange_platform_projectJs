@@ -39,7 +39,7 @@ export class nftsController {
   }
 
   @Post('')
-  @ApiResponse({ status: 200, type: NftDto })
+  @ApiResponse({ status: 201, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   async createNft(@Body() nft: CreateNftDto): Promise<Nft> {
     return this.nftsService.createNft(nft);
