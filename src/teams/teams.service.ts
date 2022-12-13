@@ -26,4 +26,11 @@ export class TeamsService {
       },
     });
   }
+
+  async updateTeamBalance(teamId: string, balance: number): Promise<TeamDto> {
+    return await this.prisma.team.update({
+      where: { id: teamId },
+      data: { balance: balance },
+    });
+  }
 }

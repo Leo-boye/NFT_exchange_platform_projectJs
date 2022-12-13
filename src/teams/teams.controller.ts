@@ -21,7 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ErrorRequestDto } from '../common/dtos/errors';
-import { TeamCreateDto, TeamDto } from './dtos/teams';
+import { TeamCreateDto, TeamDto, TeamUpdateBalanceDto } from './dtos/teams';
 import { UsersService } from '../users/users.service';
 
 @Controller('teams')
@@ -140,5 +140,32 @@ export class TeamsController {
 
     await this.usersService.updateTeamUser(userId, teamId);
     return true;
+  }
+
+  @Patch('balance/:teamId')
+  @ApiOperation({
+    summary: 'ADMIN ONLY',
+    description: 'Set balance of team',
+  })
+  @ApiParam({
+    name: 'teamId',
+    required: true,
+    allowEmptyValue: false,
+    example: '59c78745-aa9e-4930-b338-214aff8b07be',
+  })
+  @ApiResponse({ status: 200, type: TeamDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
+  @ApiResponse({ status: 404, type: ErrorRequestDto })
+  @ApiResponse({ status: 409, type: ErrorRequestDto })
+  async updateTeamBalance(
+    @Param('teamId', ParseUUIDPipe) teamId: string,
+    @Body() teamBalance: TeamUpdateBalanceDto,
+  ): Promise<TeamDto> {
+    const team = await this.teamsService.getTeamById(teamId);
+    if (!team) throw new NotFoundException('Team ID not found');
+    return await this.teamsService.updateTeamBalance(
+      teamId,
+      teamBalance.balance,
+    );
   }
 }
