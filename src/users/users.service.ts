@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../common/utils/prisma.service';
 import { generate } from 'generate-password';
-import { UserCreatedDto, UserCreateDto } from './dtos/users';
+import { UserCreatedDto, UserCreateDto, UserDto } from './dtos/users';
 
 // This should be a real class/interface representing a user entity
 export type User = any;
@@ -25,6 +25,19 @@ export class UsersService {
 
   async findOne(username: string): Promise<User | undefined> {
     return this.users.find((user) => user.username === username);
+  }
+
+  async getAllUsers(offset: number, limit: number): Promise<Array<UserDto>> {
+    return await this.prisma.user.findMany({
+      skip: offset,
+      take: limit,
+    });
+  }
+
+  async getUserById(userId: string): Promise<UserDto | null> {
+    return await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
   }
 
   async createUser(user: UserCreateDto): Promise<UserCreatedDto> {
