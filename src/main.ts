@@ -10,6 +10,7 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  // to respect dependencies injection logic, app.useGlobalGuards is setup in app.module.ts
 
   const config = new DocumentBuilder()
     .setTitle('NFT exchange platform')
@@ -20,6 +21,17 @@ async function bootstrap() {
         '- Fake NFT management',
     )
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

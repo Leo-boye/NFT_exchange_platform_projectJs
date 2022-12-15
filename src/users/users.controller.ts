@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import {
+  ApiBearerAuth,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -20,17 +21,18 @@ import {
 } from '@nestjs/swagger';
 import { UserCreateDto, UserDto, UserWithPasswordDto } from './dtos/users';
 import { ErrorRequestDto } from '../common/dtos/errors';
+import { AdminOnly } from '../common/guards/roles.decorator';
 
 @Controller('users')
 @ApiTags('Users management')
+@ApiBearerAuth('JWT-auth')
+@ApiResponse({ status: 401, type: ErrorRequestDto })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get('')
-  @ApiOperation({
-    summary: 'ADMIN ONLY',
-    description: 'Get all users',
-  })
+  @Get()
+  @AdminOnly()
+  @ApiOperation({ description: 'Get all users' })
   @ApiQuery({ name: 'offset', required: false, example: 0 })
   @ApiQuery({ name: 'limit', required: false, example: 100 })
   @ApiResponse({ status: 200, type: Array<UserDto> })
@@ -42,10 +44,8 @@ export class UsersController {
   }
 
   @Get(':userId')
-  @ApiOperation({
-    summary: 'ADMIN ONLY',
-    description: 'Get user from ID',
-  })
+  @AdminOnly()
+  @ApiOperation({ description: 'Get user from ID' })
   @ApiParam({
     name: 'userId',
     required: true,
@@ -53,6 +53,7 @@ export class UsersController {
     example: '59c78745-aa9e-4930-b338-214aff8b07be',
   })
   @ApiResponse({ status: 200, type: UserDto })
+  @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 404, type: ErrorRequestDto })
   async getUserById(
     @Param('userId', ParseUUIDPipe) userId: string,
@@ -62,10 +63,8 @@ export class UsersController {
     throw new NotFoundException('User ID not found');
   }
 
-  @Post('')
-  @ApiOperation({
-    description: 'Create user',
-  })
+  @Post()
+  @ApiOperation({ description: 'Create user' })
   @ApiResponse({ status: 201, type: UserWithPasswordDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 409, type: ErrorRequestDto })

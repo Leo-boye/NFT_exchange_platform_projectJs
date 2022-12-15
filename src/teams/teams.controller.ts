@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import {
+  ApiBearerAuth,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -23,20 +24,21 @@ import {
 import { ErrorRequestDto } from '../common/dtos/errors';
 import { TeamCreateDto, TeamDto, TeamUpdateBalanceDto } from './dtos/teams';
 import { UsersService } from '../users/users.service';
+import { AdminOnly } from '../common/guards/roles.decorator';
 
 @Controller('teams')
 @ApiTags('Teams management')
+@ApiBearerAuth('JWT-auth')
+@ApiResponse({ status: 401, type: ErrorRequestDto })
 export class TeamsController {
   constructor(
     private readonly teamsService: TeamsService,
     private readonly usersService: UsersService,
   ) {}
 
-  @Get('')
-  @ApiOperation({
-    summary: 'ADMIN ONLY',
-    description: 'Get all teams',
-  })
+  @Get()
+  @AdminOnly()
+  @ApiOperation({ description: 'Get all teams' })
   @ApiQuery({ name: 'offset', required: false, example: 0 })
   @ApiQuery({ name: 'limit', required: false, example: 100 })
   @ApiResponse({ status: 200, type: Array<TeamDto> })
@@ -48,10 +50,8 @@ export class TeamsController {
   }
 
   @Get(':teamId')
-  @ApiOperation({
-    summary: 'ADMIN ONLY',
-    description: 'Get team from ID',
-  })
+  @AdminOnly()
+  @ApiOperation({ description: 'Get team from ID' })
   @ApiParam({
     name: 'teamId',
     required: true,
@@ -82,9 +82,7 @@ export class TeamsController {
   }
 
   @Patch('invite/:userId')
-  @ApiOperation({
-    description: 'Invite user on team',
-  })
+  @ApiOperation({ description: 'Invite user on team' })
   @ApiParam({
     name: 'userId',
     required: true,
@@ -108,10 +106,8 @@ export class TeamsController {
   }
 
   @Patch('add/:teamId/:userId')
-  @ApiOperation({
-    summary: 'ADMIN ONLY',
-    description: 'Add user on team',
-  })
+  @AdminOnly()
+  @ApiOperation({ description: 'Add user on team' })
   @ApiParam({
     name: 'teamId',
     required: true,
@@ -144,10 +140,8 @@ export class TeamsController {
   }
 
   @Patch('balance/:teamId')
-  @ApiOperation({
-    summary: 'ADMIN ONLY',
-    description: 'Set balance of team',
-  })
+  @AdminOnly()
+  @ApiOperation({ description: 'Set balance of team' })
   @ApiParam({
     name: 'teamId',
     required: true,

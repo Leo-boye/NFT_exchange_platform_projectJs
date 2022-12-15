@@ -12,6 +12,9 @@ import { ConfigModule } from '@nestjs/config';
 import { CollectionsModule } from './collections/collections.module';
 import Constants from './auth/constants';
 import { TeamsModule } from './teams/teams.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { RolesGuard } from './common/guards/roles.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -26,7 +29,16 @@ import { TeamsModule } from './teams/teams.module';
     UsersModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

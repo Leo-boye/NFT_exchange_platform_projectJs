@@ -4,6 +4,7 @@ import { LoginDto, LoginResponseDto } from './dtos/auth';
 import { LocalAuthGuard } from './local-auth.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorRequestDto } from '../common/dtos/errors';
+import { SkipJwtAuth } from './jwt-auth.decorator';
 
 @Controller('auth')
 @ApiTags('Authentification')
@@ -12,6 +13,7 @@ export class AuthController {
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
+  @SkipJwtAuth()
   @ApiOperation({ description: 'Login with account' })
   @ApiResponse({ status: 200, type: LoginResponseDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })

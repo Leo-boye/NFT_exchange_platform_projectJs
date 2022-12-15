@@ -10,13 +10,19 @@ import {
 export class CollectionsService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllCollection(
+  async getAllCollections(
     offset: number,
     limit: number,
   ): Promise<CollectionDto[]> {
     return await this.prisma.collection.findMany({
       skip: offset,
       take: limit,
+    });
+  }
+
+  async getCollectionById(collectionId: string): Promise<CollectionDto | null> {
+    return await this.prisma.collection.findUnique({
+      where: { id: collectionId },
     });
   }
 

@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { NftsService } from './nfts.service';
 import {
+  ApiBearerAuth,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -23,9 +24,12 @@ import {
 import { ErrorRequestDto } from '../common/dtos/errors';
 import { NftCreateDto, NftDto, NftRatingDto, NftStatusDto } from './dtos/nfts';
 import { TeamsService } from '../teams/teams.service';
+import { AdminOnly } from '../common/guards/roles.decorator';
 
 @Controller('nfts')
 @ApiTags('NFTs management')
+@ApiBearerAuth('JWT-auth')
+@ApiResponse({ status: 401, type: ErrorRequestDto })
 export class nftsController {
   constructor(
     private readonly nftsService: NftsService,
@@ -33,14 +37,12 @@ export class nftsController {
   ) {}
 
   @Get('')
-  @ApiOperation({
-    summary: 'ADMIN ONLY',
-    description: 'Get all nfts',
-  })
+  @AdminOnly()
+  @ApiOperation({ description: 'Get all nfts' })
   @ApiQuery({ name: 'offset', required: false, example: 0 })
   @ApiQuery({ name: 'limit', required: false, example: 100 })
   @ApiResponse({ status: 200, type: Array<NftDto> })
-  async getAllNft(
+  async getAllNfts(
     @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
     @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
   ): Promise<Array<NftDto>> {
@@ -48,10 +50,8 @@ export class nftsController {
   }
 
   @Get(':nftId')
-  @ApiOperation({
-    summary: 'ADMIN ONLY',
-    description: 'Get nft from ID',
-  })
+  @AdminOnly()
+  @ApiOperation({ description: 'Get nft from ID' })
   @ApiParam({
     name: 'nftId',
     required: true,
@@ -69,10 +69,8 @@ export class nftsController {
     throw new NotFoundException('NFT ID not found');
   }
 
-  @Post('')
-  @ApiOperation({
-    description: 'Create nft and set user as owner of this nft',
-  })
+  @Post()
+  @ApiOperation({ description: 'Create nft and set user as owner of this nft' })
   @ApiResponse({ status: 201, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 409, type: ErrorRequestDto })
@@ -83,10 +81,8 @@ export class nftsController {
   }
 
   @Patch(':nftId')
-  @ApiOperation({
-    summary: 'ADMIN ONLY',
-    description: 'Update nft status',
-  })
+  @AdminOnly()
+  @ApiOperation({ description: 'Update nft status' })
   @ApiParam({
     name: 'nftId',
     required: true,
@@ -109,9 +105,7 @@ export class nftsController {
   }
 
   @Patch('rate/:nftId')
-  @ApiOperation({
-    description: 'Rate nft (1-5)',
-  })
+  @ApiOperation({ description: 'Rate nft (1-5)' })
   @ApiParam({
     name: 'nftId',
     required: true,
@@ -132,9 +126,7 @@ export class nftsController {
   }
 
   @Patch('buy/:nftId')
-  @ApiOperation({
-    description: 'Buy nft',
-  })
+  @ApiOperation({ description: 'Buy nft' })
   @ApiResponse({ status: 200, type: NftDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 404, type: ErrorRequestDto })

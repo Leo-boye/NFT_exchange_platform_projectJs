@@ -28,10 +28,12 @@ describe('CollectionController', () => {
       const collection = new CollectionDto();
       const result = [collection];
       jest
-        .spyOn(collectionService, 'getAllCollection')
+        .spyOn(collectionService, 'getAllCollections')
         .mockImplementation(() => Promise.resolve(result));
 
-      expect(await collectionsController.getCollection(0, 100)).toBe(result);
+      expect(await collectionsController.getAllCollections(0, 100)).toBe(
+        result,
+      );
     });
   });
 });
