@@ -4,9 +4,7 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
-import { AppService } from './app.service';
 import { NftsModule } from './nfts/nfts.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
@@ -27,8 +25,8 @@ import { TeamsModule } from './teams/teams.module';
     TeamsModule,
     UsersModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
