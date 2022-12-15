@@ -68,7 +68,6 @@ export class nftsController {
   }
 
   @Get(':nftId')
-  @AdminOnly()
   @ApiOperation({ description: 'Get nft from ID' })
   @ApiParam({
     name: 'nftId',

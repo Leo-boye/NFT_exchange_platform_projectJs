@@ -71,7 +71,6 @@ export class CollectionsController {
   }
 
   @Get(':collectionId')
-  @AdminOnly()
   @ApiOperation({ description: 'Get all collections' })
   @ApiParam({
     name: 'collectionId',
