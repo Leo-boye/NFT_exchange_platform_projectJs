@@ -7,6 +7,7 @@ import {
   IsUUID,
   Max,
   Min,
+  ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Status } from '@prisma/client';
@@ -77,6 +78,7 @@ export class NftDto extends NftCreateDto {
     example: '59c78745-aa9e-4930-b338-214aff8b07be',
     required: false,
   })
+  @ValidateIf((object, value) => value !== undefined)
   @IsUUID()
   collectionId?: string;
 }

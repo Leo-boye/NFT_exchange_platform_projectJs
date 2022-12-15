@@ -1,4 +1,11 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsUUID, Matches } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsUUID,
+  Matches,
+  ValidateIf,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
 
@@ -33,6 +40,8 @@ export class UserDto extends UserCreateDto {
     example: '59c78745-aa9e-4930-b338-214aff8b07be',
     required: false,
   })
+  @ValidateIf((object, value) => value !== undefined)
+  @IsUUID()
   teamId?: string;
 
   @ApiProperty({ example: 'false' })
