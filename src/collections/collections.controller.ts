@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   DefaultValuePipe,
@@ -9,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 import { CollectionsService } from './collections.service';
 import {
@@ -26,16 +28,26 @@ import {
   CollectionUpdateDto,
 } from './dtos/collections';
 import { AdminOnly } from '../common/guards/roles.decorator';
+import { JwtDto } from '../auth/dtos/auth';
+import { UsersService } from '../users/users.service';
+import {
+  canChangeStatus,
+  canEditElement,
+  isPublished,
+} from '../common/utils/status';
+import { isAdmin } from '../common/utils/role';
 
 @Controller('collections')
 @ApiTags('Collections management')
 @ApiBearerAuth('JWT-auth')
 @ApiResponse({ status: 401, type: ErrorRequestDto })
 export class CollectionsController {
-  constructor(private readonly collectionsService: CollectionsService) {}
+  constructor(
+    private readonly collectionsService: CollectionsService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get()
-  @AdminOnly()
   @ApiOperation({ description: 'Get all collections' })
   @ApiQuery({ name: 'offset', required: false, example: 0 })
   @ApiQuery({ name: 'limit', required: false, example: 100 })
@@ -43,8 +55,19 @@ export class CollectionsController {
   async getAllCollections(
     @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
     @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
+    @Req() req,
   ): Promise<Array<CollectionDto>> {
-    return await this.collectionsService.getAllCollections(offset, limit);
+    // FIXME: try to auth but not required
+    const requestUser = req.user as JwtDto;
+    const user = await this.usersService.getUserById(requestUser.id);
+
+    const res = await this.collectionsService.getAllCollections(offset, limit);
+    if (isAdmin(user.role)) return res;
+    return res.filter(
+      (collection) =>
+        isPublished(collection.status) ||
+        (user.isTeamOwner && collection.teamId === user.teamId),
+    );
   }
 
   @Get(':collectionId')
@@ -61,8 +84,21 @@ export class CollectionsController {
   @ApiResponse({ status: 404, type: ErrorRequestDto })
   async getCollectionById(
     @Param('collectionId', ParseUUIDPipe) collectionId: string,
+    @Req() req,
   ): Promise<CollectionDto> {
-    return await this.collectionsService.getCollectionById(collectionId);
+    // FIXME: try to auth but not required
+    const requestUser = req.user as JwtDto;
+    const user = await this.usersService.getUserById(requestUser.id);
+
+    const res = await this.collectionsService.getCollectionById(collectionId);
+    if (
+      res &&
+      (isAdmin(user.role) ||
+        isPublished(res.status) ||
+        (user.isTeamOwner && res.teamId === user.teamId))
+    )
+      return res;
+    throw new BadRequestException('Collection ID not found');
   }
 
   @Post()
@@ -72,8 +108,17 @@ export class CollectionsController {
   @ApiResponse({ status: 409, type: ErrorRequestDto })
   async createCollection(
     @Body() collection: CollectionCreateDto,
+    @Req() req,
   ): Promise<CollectionDto> {
-    return await this.collectionsService.createCollection(collection);
+    const requestUser = req.user as JwtDto;
+    const user = await this.usersService.getUserById(requestUser.id);
+    if (!user.teamId) throw new BadRequestException('You not in a team');
+
+    return await this.collectionsService.createCollection(
+      collection,
+      user.teamId,
+      user.name,
+    );
   }
 
   @Patch(':collectionId')
@@ -91,7 +136,24 @@ export class CollectionsController {
   async updateCollection(
     @Param('collectionId', ParseUUIDPipe) collectionId: string,
     @Body() collection: CollectionUpdateDto,
+    @Req() req,
   ): Promise<CollectionDto> {
+    const requestUser = req.user as JwtDto;
+    const user = await this.usersService.getUserById(requestUser.id);
+    if (!user.teamId) throw new BadRequestException('You not in a team');
+
+    const currentCollection = await this.collectionsService.getCollectionById(
+      collectionId,
+    );
+    if (
+      collection.status &&
+      !isAdmin(user.role) &&
+      canChangeStatus(currentCollection.status, collection.status)
+    )
+      throw new BadRequestException('Cannot downgrade status');
+    if (!isAdmin(user.role) && !canEditElement(currentCollection.status))
+      throw new BadRequestException('Cannot edit archived collection');
+
     return await this.collectionsService.updateCollection(
       collection,
       collectionId,

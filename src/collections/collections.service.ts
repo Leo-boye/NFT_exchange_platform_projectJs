@@ -13,7 +13,7 @@ export class CollectionsService {
   async getAllCollections(
     offset: number,
     limit: number,
-  ): Promise<CollectionDto[]> {
+  ): Promise<Array<CollectionDto>> {
     return await this.prisma.collection.findMany({
       skip: offset,
       take: limit,
@@ -26,16 +26,20 @@ export class CollectionsService {
     });
   }
 
-  async createCollection(collection: CollectionCreateDto) {
+  async createCollection(
+    collection: CollectionCreateDto,
+    ownerTeamId: string,
+    userName: string,
+  ): Promise<CollectionDto> {
     return await this.prisma.collection.create({
-      data: collection,
+      data: { ...collection, teamId: ownerTeamId, userName: userName },
     });
   }
 
   async updateCollection(
     collection: CollectionUpdateDto,
     collectionID: string,
-  ) {
+  ): Promise<CollectionDto> {
     return await this.prisma.collection.update({
       where: { id: collectionID },
       data: collection,

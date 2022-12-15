@@ -11,6 +11,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import {
@@ -25,6 +26,7 @@ import { ErrorRequestDto } from '../common/dtos/errors';
 import { TeamCreateDto, TeamDto, TeamUpdateBalanceDto } from './dtos/teams';
 import { UsersService } from '../users/users.service';
 import { AdminOnly } from '../common/guards/roles.decorator';
+import { JwtDto } from '../auth/dtos/auth';
 
 @Controller('teams')
 @ApiTags('Teams management')
@@ -76,9 +78,17 @@ export class TeamsController {
   @ApiResponse({ status: 201, type: TeamDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 409, type: ErrorRequestDto })
-  async createTeam(@Body() team: TeamCreateDto): Promise<TeamDto> {
-    // FIXME
-    return await this.teamsService.createTeam(team);
+  async createTeam(@Body() team: TeamCreateDto, @Req() req): Promise<TeamDto> {
+    const requestUser = req.user as JwtDto;
+    const user = await this.usersService.getUserById(requestUser.id);
+    if (user.teamId) throw new BadRequestException('User already in a team');
+    const createdTeam = await this.teamsService.createTeam(team);
+    await this.usersService.updateTeamUser(
+      requestUser.id,
+      createdTeam.id,
+      true,
+    );
+    return createdTeam;
   }
 
   @Patch('invite/:userId')
@@ -95,13 +105,18 @@ export class TeamsController {
   @ApiResponse({ status: 409, type: ErrorRequestDto })
   async inviteUserOnTeam(
     @Param('userId', ParseUUIDPipe) userId: string,
+    @Req() req,
   ): Promise<boolean> {
-    const user = await this.usersService.getUserById(userId);
-    if (!user) throw new NotFoundException('User ID not found');
-    if (user.teamId) throw new BadRequestException('User already in a team');
-    // FIXME
-    const teamId = 'c6365738-7d4b-4ae3-b638-93542288f500';
-    await this.usersService.updateTeamUser(userId, teamId);
+    const requestUser = req.user as JwtDto;
+    const user = await this.usersService.getUserById(requestUser.id);
+    if (!user.teamId) throw new BadRequestException('You not in a team');
+
+    const invitedUser = await this.usersService.getUserById(userId);
+    if (!invitedUser) throw new NotFoundException('User ID not found');
+    if (invitedUser.teamId)
+      throw new BadRequestException('User already in a team');
+
+    await this.usersService.updateTeamUser(userId, user.teamId);
     return true;
   }
 

@@ -45,7 +45,10 @@ export class NftCreateDto {
   @IsNotEmpty()
   price: number;
 
-  @ApiProperty({ example: 'DRAFT' })
+  @ApiProperty({
+    example: 'DRAFT',
+    description: 'DRAFT -> PUBLISHED -> ARCHIVED',
+  })
   @IsEnum(Status)
   @IsNotEmpty()
   status: Status;

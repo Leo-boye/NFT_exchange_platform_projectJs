@@ -20,6 +20,17 @@ export class NftsService {
     });
   }
 
+  async getNftsByTeamId(teamId: string): Promise<Array<NftDto>> {
+    return await this.prisma.nft.findMany({
+      where: {
+        owner: {
+          teamId: teamId,
+        },
+      },
+      include: { owner: true },
+    });
+  }
+
   async createNft(nft: NftCreateDto, ownerId: string): Promise<NftDto> {
     return await this.prisma.nft.create({
       data: {

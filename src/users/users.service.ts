@@ -43,14 +43,22 @@ export class UsersService {
     });
   }
 
-  async updateTeamUser(userId: string, teamId: string): Promise<UserDto> {
-    console.log(userId);
-    console.log(teamId);
+  async updateTeamUser(
+    userId: string,
+    teamId: string,
+    isTeamOwner?: boolean,
+  ): Promise<UserDto> {
+    let data;
+    switch (isTeamOwner) {
+      case undefined:
+        data = { teamId: teamId };
+        break;
+      default:
+        data = { teamId: teamId, isTeamOwner: isTeamOwner };
+    }
     return await this.prisma.user.update({
       where: { id: userId },
-      data: {
-        teamId: teamId,
-      },
+      data: data,
     });
   }
 }
