@@ -5,6 +5,8 @@ import {
   CollectionDto,
   CollectionUpdateDto,
 } from './dtos/collections';
+import { UserDto } from '../users/dtos/users';
+import { isAdmin } from '../common/utils/role';
 
 @Injectable()
 export class CollectionsService {
@@ -13,8 +15,18 @@ export class CollectionsService {
   async getAllCollections(
     offset: number,
     limit: number,
+    user: UserDto | null,
   ): Promise<Array<CollectionDto>> {
+    let filter;
+    if (user && isAdmin(user.role)) {
+      filter = {};
+    } else if (user && user.isTeamOwner) {
+      filter = { OR: [{ status: 'PUBLISHED' }, { teamId: user.teamId }] };
+    } else {
+      filter = { status: 'PUBLISHED' };
+    }
     return await this.prisma.collection.findMany({
+      where: filter,
       skip: offset,
       take: limit,
     });

@@ -27,7 +27,6 @@ import {
   CollectionDto,
   CollectionUpdateDto,
 } from './dtos/collections';
-import { AdminOnly } from '../common/guards/roles.decorator';
 import { JwtDto } from '../auth/dtos/auth';
 import { UsersService } from '../users/users.service';
 import {
@@ -36,6 +35,7 @@ import {
   isPublished,
 } from '../common/utils/status';
 import { isAdmin } from '../common/utils/role';
+import { OptionalJwtAuth } from '../auth/jwt-auth.decorator';
 
 @Controller('collections')
 @ApiTags('Collections management')
@@ -48,6 +48,7 @@ export class CollectionsController {
   ) {}
 
   @Get()
+  @OptionalJwtAuth()
   @ApiOperation({ description: 'Get all collections' })
   @ApiQuery({ name: 'offset', required: false, example: 0 })
   @ApiQuery({ name: 'limit', required: false, example: 100 })
@@ -57,20 +58,15 @@ export class CollectionsController {
     @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
     @Req() req,
   ): Promise<Array<CollectionDto>> {
-    // FIXME: try to auth but not required
     const requestUser = req.user as JwtDto;
-    const user = await this.usersService.getUserById(requestUser.id);
-
-    const res = await this.collectionsService.getAllCollections(offset, limit);
-    if (isAdmin(user.role)) return res;
-    return res.filter(
-      (collection) =>
-        isPublished(collection.status) ||
-        (user.isTeamOwner && collection.teamId === user.teamId),
-    );
+    const user = requestUser
+      ? await this.usersService.getUserById(requestUser.id)
+      : null;
+    return await this.collectionsService.getAllCollections(offset, limit, user);
   }
 
   @Get(':collectionId')
+  @OptionalJwtAuth()
   @ApiOperation({ description: 'Get all collections' })
   @ApiParam({
     name: 'collectionId',
@@ -85,16 +81,17 @@ export class CollectionsController {
     @Param('collectionId', ParseUUIDPipe) collectionId: string,
     @Req() req,
   ): Promise<CollectionDto> {
-    // FIXME: try to auth but not required
     const requestUser = req.user as JwtDto;
-    const user = await this.usersService.getUserById(requestUser.id);
+    const user = requestUser
+      ? await this.usersService.getUserById(requestUser.id)
+      : null;
 
     const res = await this.collectionsService.getCollectionById(collectionId);
     if (
       res &&
-      (isAdmin(user.role) ||
+      ((user && isAdmin(user.role)) ||
         isPublished(res.status) ||
-        (user.isTeamOwner && res.teamId === user.teamId))
+        (user && user.isTeamOwner && res.teamId === user.teamId))
     )
       return res;
     throw new BadRequestException('Collection ID not found');

@@ -25,7 +25,6 @@ import {
 import { ErrorRequestDto } from '../common/dtos/errors';
 import { NftCreateDto, NftDto, NftRatingDto, NftStatusDto } from './dtos/nfts';
 import { TeamsService } from '../teams/teams.service';
-import { AdminOnly } from '../common/guards/roles.decorator';
 import { JwtDto } from '../auth/dtos/auth';
 import { UsersService } from '../users/users.service';
 import {
@@ -34,6 +33,7 @@ import {
   isPublished,
 } from '../common/utils/status';
 import { isAdmin } from '../common/utils/role';
+import { OptionalJwtAuth } from '../auth/jwt-auth.decorator';
 
 @Controller('nfts')
 @ApiTags('NFTs management')
@@ -46,7 +46,8 @@ export class nftsController {
     private readonly usersService: UsersService,
   ) {}
 
-  @Get('')
+  @Get()
+  @OptionalJwtAuth()
   @ApiOperation({ description: 'Get all nfts' })
   @ApiQuery({ name: 'offset', required: false, example: 0 })
   @ApiQuery({ name: 'limit', required: false, example: 100 })
@@ -56,18 +57,15 @@ export class nftsController {
     @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
     @Req() req,
   ): Promise<Array<NftDto>> {
-    // FIXME: try to auth but not required
     const requestUser = req.user as JwtDto;
-    const user = await this.usersService.getUserById(requestUser.id);
-
-    const res = await this.nftsService.getAllNfts(offset, limit);
-    if (isAdmin(user.role)) return res;
-    return res.filter(
-      (nft) => isPublished(nft.status) || nft.ownerId === user.id,
-    );
+    const user = requestUser
+      ? await this.usersService.getUserById(requestUser.id)
+      : null;
+    return await this.nftsService.getAllNfts(offset, limit, user);
   }
 
   @Get(':nftId')
+  @OptionalJwtAuth()
   @ApiOperation({ description: 'Get nft from ID' })
   @ApiParam({
     name: 'nftId',
@@ -82,14 +80,18 @@ export class nftsController {
     @Param('nftId', ParseUUIDPipe) nftId: string,
     @Req() req,
   ): Promise<NftDto> {
-    // FIXME: try to auth but not required
     const requestUser = req.user as JwtDto;
-    const user = await this.usersService.getUserById(requestUser.id);
+    const user = requestUser
+      ? await this.usersService.getUserById(requestUser.id)
+      : null;
 
     const res = await this.nftsService.getNftById(nftId);
+    console.log(res);
     if (
       res &&
-      (isAdmin(user.role) || isPublished(res.status) || res.ownerId === user.id)
+      ((user && isAdmin(user.role)) ||
+        isPublished(res.status) ||
+        (user && res.ownerId === user.id))
     )
       return res;
     throw new NotFoundException('NFT ID not found');
@@ -109,7 +111,6 @@ export class nftsController {
   }
 
   @Patch(':nftId')
-  @AdminOnly()
   @ApiOperation({ description: 'Update nft status' })
   @ApiParam({
     name: 'nftId',
@@ -128,11 +129,12 @@ export class nftsController {
   ): Promise<NftDto> {
     const requestUser = req.user as JwtDto;
     const user = await this.usersService.getUserById(requestUser.id);
-    if (!user.teamId) throw new BadRequestException('You not in a team');
+    if (!isAdmin(user.role) && !user.teamId)
+      throw new BadRequestException('You not in a team');
 
     const nft = await this.nftsService.getNftById(nftId);
     if (!nft) throw new NotFoundException('NFT ID not found');
-    if (!isAdmin(user.role) && canChangeStatus(nft.status, nftStatus.status))
+    if (!isAdmin(user.role) && !canChangeStatus(nft.status, nftStatus.status))
       throw new BadRequestException('Cannot downgrade status');
     return this.nftsService.updateNftStatus(nftId, nftStatus.status);
   }

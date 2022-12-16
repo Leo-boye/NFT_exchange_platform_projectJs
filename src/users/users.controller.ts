@@ -22,16 +22,17 @@ import {
 import { UserCreateDto, UserDto, UserWithPasswordDto } from './dtos/users';
 import { ErrorRequestDto } from '../common/dtos/errors';
 import { AdminOnly } from '../common/guards/roles.decorator';
+import { SkipJwtAuth } from '../auth/jwt-auth.decorator';
 
 @Controller('users')
 @ApiTags('Users management')
-@ApiBearerAuth('JWT-auth')
 @ApiResponse({ status: 401, type: ErrorRequestDto })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
   @AdminOnly()
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ description: 'Get all users' })
   @ApiQuery({ name: 'offset', required: false, example: 0 })
   @ApiQuery({ name: 'limit', required: false, example: 100 })
@@ -45,6 +46,7 @@ export class UsersController {
 
   @Get(':userId')
   @AdminOnly()
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ description: 'Get user from ID' })
   @ApiParam({
     name: 'userId',
@@ -64,6 +66,7 @@ export class UsersController {
   }
 
   @Post()
+  @SkipJwtAuth()
   @ApiOperation({ description: 'Create user' })
   @ApiResponse({ status: 201, type: UserWithPasswordDto })
   @ApiResponse({ status: 400, type: ErrorRequestDto })

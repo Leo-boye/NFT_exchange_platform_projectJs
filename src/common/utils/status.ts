@@ -1,15 +1,10 @@
 import { Status } from '@prisma/client';
 
 export function canChangeStatus(oldStatus: Status, newStatus: Status): boolean {
-  if (oldStatus === newStatus) return true;
-  switch (oldStatus) {
-    case Status.DRAFT:
-      return true;
-    case Status.ARCHIVED:
-      return newStatus === Status.DRAFT;
-    case Status.PUBLISHED:
-      return false;
-  }
+  const statusList = Object.values(Status);
+  const oldStatusIndex = statusList.indexOf(oldStatus);
+  const newStatusIndex = statusList.indexOf(newStatus);
+  return newStatusIndex >= oldStatusIndex;
 }
 
 export function canEditElement(status: Status): boolean {

@@ -2,13 +2,28 @@ import { Injectable } from '@nestjs/common';
 import { Status } from '@prisma/client';
 import { PrismaService } from '../common/utils/prisma.service';
 import { NftCreateDto, NftDto } from './dtos/nfts';
+import { isAdmin } from '../common/utils/role';
+import { UserDto } from '../users/dtos/users';
 
 @Injectable()
 export class NftsService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllNfts(offset: number, limit: number): Promise<Array<NftDto>> {
+  async getAllNfts(
+    offset: number,
+    limit: number,
+    user: UserDto | null,
+  ): Promise<Array<NftDto>> {
+    let filter;
+    if (user && isAdmin(user.role)) {
+      filter = {};
+    } else if (user) {
+      filter = { OR: [{ status: 'PUBLISHED' }, { ownerId: user.id }] };
+    } else {
+      filter = { status: 'PUBLISHED' };
+    }
     return await this.prisma.nft.findMany({
+      where: filter,
       skip: offset,
       take: limit,
     });
