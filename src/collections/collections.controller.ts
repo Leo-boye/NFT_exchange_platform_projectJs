@@ -141,14 +141,18 @@ export class CollectionsController {
     const currentCollection = await this.collectionsService.getCollectionById(
       collectionId,
     );
-    if (
-      collection.status &&
-      !isAdmin(user.role) &&
-      !canChangeStatus(currentCollection.status, collection.status)
-    )
-      throw new BadRequestException('Cannot downgrade status');
-    if (!isAdmin(user.role) && !canEditElement(currentCollection.status))
-      throw new BadRequestException('Cannot edit archived collection');
+
+    if (!isAdmin(user.role)) {
+      if (!user.isTeamOwner || user.teamId !== currentCollection.teamId)
+        throw new BadRequestException('You not the team owner');
+      if (!canEditElement(currentCollection.status))
+        throw new BadRequestException('Cannot edit archived collection');
+      if (
+        collection.status &&
+        !canChangeStatus(currentCollection.status, collection.status)
+      )
+        throw new BadRequestException('Cannot downgrade status');
+    }
 
     return await this.collectionsService.updateCollection(
       collection,

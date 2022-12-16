@@ -27,11 +27,7 @@ import { NftCreateDto, NftDto, NftRatingDto, NftStatusDto } from './dtos/nfts';
 import { TeamsService } from '../teams/teams.service';
 import { JwtDto } from '../auth/dtos/auth';
 import { UsersService } from '../users/users.service';
-import {
-  canChangeStatus,
-  canEditElement,
-  isPublished,
-} from '../common/utils/status';
+import { canChangeStatus, isPublished } from '../common/utils/status';
 import { isAdmin } from '../common/utils/role';
 import { OptionalJwtAuth } from '../auth/jwt-auth.decorator';
 
@@ -134,8 +130,14 @@ export class nftsController {
 
     const nft = await this.nftsService.getNftById(nftId);
     if (!nft) throw new NotFoundException('NFT ID not found');
-    if (!isAdmin(user.role) && !canChangeStatus(nft.status, nftStatus.status))
-      throw new BadRequestException('Cannot downgrade status');
+
+    if (!isAdmin(user.role)) {
+      if (nft.ownerId !== user.id)
+        throw new BadRequestException('You not owner of this NFT');
+      if (!canChangeStatus(nft.status, nftStatus.status))
+        throw new BadRequestException('Cannot downgrade status');
+    }
+
     return this.nftsService.updateNftStatus(nftId, nftStatus.status);
   }
 
@@ -156,6 +158,7 @@ export class nftsController {
     @Body() nftRating: NftRatingDto,
     @Req() req,
   ): Promise<NftDto> {
+    // FIXME: un user peut actuellement voter autant de fois qu'il veut, faudrait faire une table dédiée au vote, mais flemme
     const requestUser = req.user as JwtDto;
     const user = await this.usersService.getUserById(requestUser.id);
     if (!user.teamId) throw new BadRequestException('You not in a team');
@@ -163,12 +166,14 @@ export class nftsController {
     const nft = await this.nftsService.getNftById(nftId);
     if (!nft) throw new NotFoundException('NFT ID not found');
 
-    if (!isAdmin(user.role) && !canEditElement(nft.status))
-      throw new BadRequestException('Cannot rate archived nft');
+    if (!isAdmin(user.role)) {
+      if (!isPublished(nft.status))
+        throw new BadRequestException('Cannot rate non published nft');
 
-    const teamNfts = await this.nftsService.getNftsByTeamId(user.teamId);
-    if (teamNfts.find((nft) => nft.id === nftId))
-      throw new BadRequestException('Cannot rate your own team NFT');
+      const teamNfts = await this.nftsService.getNftsByTeamId(user.teamId);
+      if (teamNfts.find((nft) => nft.id === nftId))
+        throw new BadRequestException('Cannot rate your own team NFT');
+    }
 
     return await this.nftsService.updateNftRating(nftId, nftRating.rate);
   }
@@ -190,14 +195,20 @@ export class nftsController {
     const nft = await this.nftsService.getNftById(nftId);
     if (!nft) throw new NotFoundException('NFT ID not found');
 
-    if (!isAdmin(user.role) && !canEditElement(nft.status))
-      throw new BadRequestException('Cannot buy archived nft');
+    if (!isAdmin(user.role) && !isPublished(nft.status))
+      throw new BadRequestException('Cannot buy non published nft');
 
     const team = await this.teamsService.getTeamById(user.teamId);
     if (team.balance < nft.price)
       throw new BadRequestException('Not enough money');
 
+    const oldOwner = await this.usersService.getUserById(nft.ownerId);
     await this.teamsService.updateTeamBalance(user.teamId, nft.price, 'remove');
+    await this.teamsService.updateTeamBalance(
+      oldOwner.teamId,
+      nft.price,
+      'add',
+    );
     return await this.nftsService.updateNftOwner(nftId, user.id);
   }
 }
