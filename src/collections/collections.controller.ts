@@ -144,7 +144,7 @@ export class CollectionsController {
     if (
       collection.status &&
       !isAdmin(user.role) &&
-      canChangeStatus(currentCollection.status, collection.status)
+      !canChangeStatus(currentCollection.status, collection.status)
     )
       throw new BadRequestException('Cannot downgrade status');
     if (!isAdmin(user.role) && !canEditElement(currentCollection.status))
