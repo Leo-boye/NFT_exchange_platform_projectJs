@@ -18,15 +18,15 @@ import {
 import { NftsService } from './nfts.service';
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiOperation,
   ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
-  ApiConsumes,
 } from '@nestjs/swagger';
 import { ErrorRequestDto } from '../common/dtos/errors';
-import { NftCreateDto, NftDto, NftRatingDto, NftStatusDto, NftUpdateDto } from './dtos/nfts';
+import { NftCreateDto, NftDto, NftRatingDto, NftStatusDto } from './dtos/nfts';
 import { TeamsService } from '../teams/teams.service';
 import { JwtDto } from '../auth/dtos/auth';
 import { UsersService } from '../users/users.service';
@@ -114,7 +114,12 @@ export class nftsController {
       fileFilter: imageFileFilter,
     }),
   )
-  async createNft(@Body() nft: NftCreateDto, @UploadedFile() file: Express.Multer.File, @Req() req): Promise<NftDto> {
+  async createNft(
+    @Body() nft: NftCreateDto,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req,
+  ): Promise<NftDto> {
+    nft.imageFile = file;
     // FIXME: file is save even if dto validator fails
     const requestUser = req.user as JwtDto;
     const user = await this.usersService.getUserById(requestUser.id);

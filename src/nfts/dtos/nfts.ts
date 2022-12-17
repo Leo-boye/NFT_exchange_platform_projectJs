@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import {
   IsEnum,
   IsNotEmpty,
@@ -34,8 +34,8 @@ export class NftCreateDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ type: 'string', format: 'binary', example: 'TODO' })
-  file: Express.Multer.File;
+  @ApiProperty({ type: 'string', format: 'binary' })
+  imageFile: Express.Multer.File;
 
   @ApiProperty({ example: '100' })
   @Type(() => Number)
@@ -52,11 +52,16 @@ export class NftCreateDto {
   status: Status;
 }
 
-export class NftDto extends NftCreateDto {
+export class NftDto extends OmitType(NftCreateDto, ['imageFile'] as const) {
   @ApiProperty({ example: '59c78745-aa9e-4930-b338-214aff8b07be' })
   @IsUUID()
   @IsNotEmpty()
   id: string;
+
+  @ApiProperty({ example: 'https://example.org/nft/xxx.png' })
+  @IsUrl()
+  @IsNotEmpty()
+  image: string;
 
   @ApiProperty({ example: '2.5' })
   @Type(() => Number)
