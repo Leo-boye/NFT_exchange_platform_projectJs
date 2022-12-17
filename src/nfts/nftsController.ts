@@ -35,7 +35,7 @@ import { OptionalJwtAuth } from '../auth/jwt-auth.decorator';
 @ApiTags('NFTs management')
 @ApiBearerAuth('JWT-auth')
 @ApiResponse({ status: 401, type: ErrorRequestDto })
-export class nftsController {
+export class NftsController {
   constructor(
     private readonly nftsService: NftsService,
     private readonly teamsService: TeamsService,
@@ -210,5 +210,19 @@ export class nftsController {
       'add',
     );
     return await this.nftsService.updateNftOwner(nftId, user.id);
+  }
+
+  @Get('/topRated')
+  @OptionalJwtAuth()
+  @ApiOperation({ description: 'Show best rated NFT' })
+  @ApiQuery({ name: 'offset', required: false, example: 0 })
+  @ApiQuery({ name: 'limit', required: false, example: 5 })
+  @ApiResponse({ status: 200, type: Array<NftDto> })
+  async bestRatedNft(
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
+  ): Promise<Array<NftDto>> {
+    // FIXME
+    return await this.nftsService.getBestRatedNFT(offset, limit);
   }
 }

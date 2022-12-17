@@ -3,7 +3,7 @@ import { IsNotEmpty } from 'class-validator';
 import { UserWithPasswordDto } from '../../users/dtos/users';
 
 export class LoginDto {
-  @ApiProperty({ example: 'admin' })
+  @ApiProperty({ example: 'admin@email.com' })
   username: string;
 
   @ApiProperty({ example: '123456' })
