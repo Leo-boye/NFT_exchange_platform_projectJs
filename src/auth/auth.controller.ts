@@ -19,6 +19,6 @@ export class AuthController {
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 401, type: ErrorRequestDto })
   async login(@Body() body: LoginDto) {
-    return this.authService.login(body);
+    return await this.authService.login(body);
   }
 }

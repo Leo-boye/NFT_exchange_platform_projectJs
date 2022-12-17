@@ -125,7 +125,7 @@ export class nftsController {
     const user = await this.usersService.getUserById(requestUser.id);
     if (!user.teamId) throw new BadRequestException('You not in a team');
 
-    return this.nftsService.createNft(nft, user.id);
+    return await this.nftsService.createNft(nft, user.id);
   }
 
   @Patch(':nftId')
@@ -160,7 +160,7 @@ export class nftsController {
         throw new BadRequestException('Cannot downgrade status');
     }
 
-    return this.nftsService.updateNftStatus(nftId, nftStatus.status);
+    return await this.nftsService.updateNftStatus(nftId, nftStatus.status);
   }
 
   @Patch('rate/:nftId')
