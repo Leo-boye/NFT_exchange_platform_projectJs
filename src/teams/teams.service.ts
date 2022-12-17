@@ -50,4 +50,22 @@ export class TeamsService {
       data: data,
     });
   }
+
+  async getBestSellerTeams(
+    offset: number,
+    limit: number,
+  ): Promise<Array<TeamDto>> {
+    return await this.prisma.team.findMany({
+      orderBy: [
+        {
+          balance: 'desc',
+        },
+        {
+          name: 'asc',
+        },
+      ],
+      skip: offset,
+      take: limit,
+    });
+  }
 }
