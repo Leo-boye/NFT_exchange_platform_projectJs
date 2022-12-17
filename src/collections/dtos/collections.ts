@@ -2,6 +2,7 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { Status } from '@prisma/client';
 import {
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsPositive,
   IsUrl,
@@ -31,6 +32,7 @@ export class CollectionCreateDto {
   @ApiProperty({ example: '1234' })
   @ValidateIf((object, value) => value !== undefined)
   @Type(() => Number)
+  @IsInt()
   @IsPositive()
   autoArchivingTimeInSecondes?: number;
 }

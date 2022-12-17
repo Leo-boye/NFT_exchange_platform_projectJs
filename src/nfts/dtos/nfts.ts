@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsPositive,
   IsUrl,
@@ -23,6 +24,7 @@ export class NftRatingDto {
   @ApiProperty({ example: '2.5' })
   @ApiProperty({ example: '2.5' })
   @Type(() => Number)
+  @IsInt()
   @Min(1)
   @Max(5)
   @IsNotEmpty()
@@ -41,6 +43,7 @@ export class NftCreateDto {
 
   @ApiProperty({ example: '100' })
   @Type(() => Number)
+  @IsInt()
   @IsPositive()
   @IsNotEmpty()
   price: number;
@@ -68,6 +71,7 @@ export class NftDto extends NftCreateDto {
 
   @ApiProperty({ example: '42' })
   @Type(() => Number)
+  @IsInt()
   @IsPositive()
   @IsNotEmpty()
   ratingCount: number;

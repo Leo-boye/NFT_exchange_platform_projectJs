@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { IsInt, IsNotEmpty, IsUUID } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class TeamUpdateBalanceDto {
@@ -22,6 +22,7 @@ export class TeamDto extends TeamCreateDto {
 
   @ApiProperty({ example: '125' })
   @Type(() => Number)
+  @IsInt()
   @IsNotEmpty()
   balance: number;
 }

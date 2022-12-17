@@ -37,7 +37,7 @@ model Nft {
   image        String
   price        Int
   status       Status      @default(DRAFT)
-  rating       Int         @default(0)
+  rating       Float       @default(0)
   ratingCount  Int         @default(0)
   owner        User        @relation(fields: [ownerId], references: [id])
   ownerId      String
