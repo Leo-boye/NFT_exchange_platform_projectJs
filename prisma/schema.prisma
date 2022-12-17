@@ -11,23 +11,24 @@ datasource db {
 }
 
 model User {
-  id                String  @id @default(uuid())
+  id                String   @id @default(uuid())
   name              String
-  email             String  @unique
+  email             String   @unique
   password          String
-  role              Role    @default(BASIC)
-  blockchainAddress String  @unique
-  Team              Team?   @relation(fields: [teamId], references: [id])
+  role              UserRole @default(BASIC)
+  blockchainAddress String   @unique
+  Team              Team?    @relation(fields: [teamId], references: [id])
   teamId            String?
-  isTeamOwner       Boolean @default(false)
+  isTeamOwner       Boolean  @default(false)
   Nft               Nft[]
 }
 
 model Team {
-  id      String @id @default(uuid())
-  name    String @unique
-  balance Int    @default(0)
-  members User[]
+  id         String       @id @default(uuid())
+  name       String       @unique
+  balance    Int          @default(0)
+  members    User[]
+  Collection Collection[]
 }
 
 model Nft {
@@ -37,7 +38,7 @@ model Nft {
   price        Int
   status       Status      @default(DRAFT)
   rating       Int         @default(0)
-  rating_count Int         @default(0)
+  ratingCount  Int         @default(0)
   owner        User        @relation(fields: [ownerId], references: [id])
   ownerId      String
   Collection   Collection? @relation(fields: [collectionId], references: [id])
@@ -45,14 +46,18 @@ model Nft {
 }
 
 model Collection {
-  id     String  @id @default(uuid())
-  name   String
-  logo   String?
-  status Status  @default(DRAFT)
-  nfts   Nft[]
+  id                          String  @id @default(uuid())
+  name                        String
+  logo                        String?
+  status                      Status  @default(DRAFT)
+  autoArchivingTimeInSecondes Int?
+  nfts                        Nft[]
+  team                        Team    @relation(fields: [teamId], references: [id])
+  teamId                      String
+  userName                    String
 }
 
-enum Role {
+enum UserRole {
   ADMIN
   BASIC
 }

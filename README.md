@@ -24,3 +24,26 @@ docker compose --env-file .env up -d
 ```bash
 npx prisma migrate dev --name migration
 ```
+
+## Create admin user
+
+```bash
+npx ts-node database/load_db.ts
+```
+
+## Start server
+
+```bash
+npm run start
+```
+
+## Package choices
+
+* `class-transformer` for DTO data validation
+* `class-validator` for DTO data validation
+* `config` for environment variables
+* `generate-password` for password generation
+* `jwt` for token generation
+* `prisma` for database management (good for migrations and ORM)
+* `passport` for authentication
+* `swagger` for API documentation
