@@ -30,4 +30,33 @@ export class SellsService {
       },
     });
   }
+
+  async getLatestSells(offset: number, limit: number): Promise<Array<SellDto>> {
+    return await this.prisma.sell.findMany({
+      orderBy: [
+        {
+          datetime: 'desc',
+        },
+      ],
+      skip: offset,
+      take: limit,
+    });
+  }
+
+  async getOwnSells(
+    offset: number,
+    limit: number,
+    userId: string,
+  ): Promise<Array<SellDto>> {
+    return await this.prisma.sell.findMany({
+      where: {
+        sellerId: userId,
+      },
+      orderBy: {
+        datetime: 'desc',
+      },
+      skip: offset,
+      take: limit,
+    });
+  }
 }

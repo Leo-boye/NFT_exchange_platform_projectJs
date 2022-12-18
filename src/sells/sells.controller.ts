@@ -1,10 +1,12 @@
 import {
+  BadRequestException,
   Controller,
   DefaultValuePipe,
   Get,
   Param,
   ParseIntPipe,
   Query,
+  Req,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -18,12 +20,18 @@ import { SellsService } from './sells.service';
 import { SellDto } from './dto/sells';
 import { AdminOnly } from '../common/guards/roles.decorator';
 import { ErrorRequestDto } from '../common/dtos/errors';
+import { OptionalJwtAuth } from '../auth/jwt-auth.decorator';
+import { JwtDto } from '../auth/dtos/auth';
+import { UsersService } from '../users/users.service';
 
 @Controller('sells')
 @ApiTags('NFTs sells management')
 @ApiBearerAuth('JWT-auth')
 export class SellsController {
-  constructor(private readonly sellsService: SellsService) {}
+  constructor(
+    private readonly sellsService: SellsService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get()
   @AdminOnly()
@@ -36,6 +44,37 @@ export class SellsController {
     @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
   ): Promise<Array<SellDto>> {
     return await this.sellsService.getAllSells(offset, limit);
+  }
+
+  @Get('/latest')
+  @OptionalJwtAuth()
+  @ApiOperation({ description: 'Get latest sells' })
+  @ApiQuery({ name: 'offset', required: false, example: 0 })
+  @ApiQuery({ name: 'limit', required: false, example: 5 })
+  @ApiResponse({ status: 200, type: Array<SellDto> })
+  async getLatestSells(
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
+  ): Promise<Array<SellDto>> {
+    return await this.sellsService.getLatestSells(offset, limit);
+  }
+
+  @Get('/own')
+  @ApiOperation({ description: 'Get own sells' })
+  @ApiQuery({ name: 'offset', required: false, example: 0 })
+  @ApiQuery({ name: 'limit', required: false, example: 5 })
+  @ApiResponse({ status: 200, type: Array<SellDto> })
+  async getOwnSells(
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
+    @Req() req,
+  ): Promise<Array<SellDto>> {
+    const requestUser = req.user as JwtDto;
+    const user = await this.usersService.getUserById(requestUser.id);
+    // Weird but 'A user without team can only create a team or be invited to a team'
+    if (!user.teamId) throw new BadRequestException('You not in a team');
+
+    return await this.sellsService.getOwnSells(offset, limit, user.id);
   }
 
   @Get(':sellId')
