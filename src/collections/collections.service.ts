@@ -57,4 +57,19 @@ export class CollectionsService {
       data: collection,
     });
   }
+
+  async getBestSellerCollections(
+    offset: number,
+    limit: number,
+  ): Promise<Array<CollectionDto>> {
+    return await this.prisma.collection.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: {
+        // TODO
+        name: 'asc',
+      },
+      skip: offset,
+      take: limit,
+    });
+  }
 }

@@ -65,6 +65,22 @@ export class CollectionsController {
     return await this.collectionsService.getAllCollections(offset, limit, user);
   }
 
+  @Get('/bestSeller')
+  @OptionalJwtAuth()
+  @ApiOperation({ description: 'Get best seller collections' })
+  @ApiQuery({ name: 'offset', required: false, example: 0 })
+  @ApiQuery({ name: 'limit', required: false, example: 5 })
+  @ApiResponse({ status: 200, type: Array<CollectionDto> })
+  async getBestSellerCollections(
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
+  ): Promise<Array<CollectionDto>> {
+    return await this.collectionsService.getBestSellerCollections(
+      offset,
+      limit,
+    );
+  }
+
   @Get(':collectionId')
   @OptionalJwtAuth()
   @ApiOperation({ description: 'Get all collections' })
