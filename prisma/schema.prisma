@@ -17,12 +17,12 @@ model User {
   password          String
   role              UserRole @default(BASIC)
   blockchainAddress String   @unique
-  Team              Team?    @relation(fields: [teamId], references: [id])
+  team              Team?    @relation(fields: [teamId], references: [id])
   teamId            String?
   isTeamOwner       Boolean  @default(false)
-  Nft               Nft[]
-  Buys              Sell[]   @relation("buyer")
-  Sells             Sell[]   @relation("seller")
+  nft               Nft[]
+  buys              Sell[]   @relation("buyer")
+  sells             Sell[]   @relation("seller")
 }
 
 model Team {
@@ -30,7 +30,7 @@ model Team {
   name       String       @unique
   balance    Int          @default(0)
   members    User[]
-  Collection Collection[]
+  collection Collection[]
 }
 
 model Nft {
@@ -43,9 +43,9 @@ model Nft {
   ratingCount  Int         @default(0)
   owner        User        @relation(fields: [ownerId], references: [id])
   ownerId      String
-  Collection   Collection? @relation(fields: [collectionId], references: [id])
+  collection   Collection? @relation(fields: [collectionId], references: [id])
   collectionId String?
-  Sell         Sell[]
+  sell         Sell[]
 }
 
 model Collection {
@@ -58,7 +58,7 @@ model Collection {
   team                        Team    @relation(fields: [teamId], references: [id])
   teamId                      String
   userName                    String
-  Sell                        Sell[]
+  sell                        Sell[]
 }
 
 model Sell {
