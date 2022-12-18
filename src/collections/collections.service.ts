@@ -74,8 +74,9 @@ export class CollectionsService {
     return await this.prisma.collection.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: {
-        // TODO
-        name: 'asc',
+        Sell: {
+          _count: 'desc',
+        },
       },
       skip: offset,
       take: limit,
