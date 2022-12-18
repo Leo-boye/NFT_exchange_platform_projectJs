@@ -84,7 +84,6 @@ export class NftsController {
       : null;
 
     const res = await this.nftsService.getNftById(nftId);
-    console.log(res);
     if (
       res &&
       ((user && isAdmin(user.role)) ||

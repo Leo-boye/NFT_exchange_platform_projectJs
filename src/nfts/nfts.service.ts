@@ -87,7 +87,7 @@ export class NftsService {
   }
 
   async getBestRatedNFT(offset: number, limit: number): Promise<Array<NftDto>> {
-    const nft = await this.prisma.nft.findMany({
+    return await this.prisma.nft.findMany({
       orderBy: [
         {
           rating: 'desc',
@@ -102,7 +102,5 @@ export class NftsService {
       skip: offset,
       take: limit,
     });
-    console.log(nft);
-    return nft;
   }
 }
