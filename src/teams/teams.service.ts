@@ -56,12 +56,13 @@ export class TeamsService {
     limit: number,
   ): Promise<Array<TeamDto>> {
     return await this.prisma.team.findMany({
-      orderBy: [
-        {
-          // TODO
-          name: 'asc',
-        },
-      ],
+      orderBy: {
+        balance: 'desc',
+        name: 'asc',
+      },
+      include: {
+        members: true,
+      },
       skip: offset,
       take: limit,
     });
