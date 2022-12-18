@@ -23,6 +23,7 @@ import { ErrorRequestDto } from '../common/dtos/errors';
 import { OptionalJwtAuth } from '../auth/jwt-auth.decorator';
 import { JwtDto } from '../auth/dtos/auth';
 import { UsersService } from '../users/users.service';
+import { isAdmin } from '../common/utils/role';
 
 @Controller('sells')
 @ApiTags('NFTs sells management')
@@ -72,7 +73,8 @@ export class SellsController {
     const requestUser = req.user as JwtDto;
     const user = await this.usersService.getUserById(requestUser.id);
     // Weird but 'A user without team can only create a team or be invited to a team'
-    if (!user.teamId) throw new BadRequestException('You not in a team');
+    if (!isAdmin(user.role) && !user.teamId)
+      throw new BadRequestException('You not in a team');
 
     return await this.sellsService.getOwnSells(offset, limit, user.id);
   }

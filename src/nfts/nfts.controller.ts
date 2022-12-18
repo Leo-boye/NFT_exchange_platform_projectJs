@@ -115,7 +115,8 @@ export class NftsController {
   async createNft(@Body() nft: NftCreateDto, @Req() req): Promise<NftDto> {
     const requestUser = req.user as JwtDto;
     const user = await this.usersService.getUserById(requestUser.id);
-    if (!user.teamId) throw new BadRequestException('You not in a team');
+    if (!isAdmin(user.role) && !user.teamId)
+      throw new BadRequestException('You not in a team');
 
     const res = await this.nftsService.createNft(nft, user.id);
     console.log(
@@ -181,7 +182,8 @@ export class NftsController {
     // FIXME: un user peut actuellement voter autant de fois qu'il veut, faudrait faire une table dédiée au vote, mais flemme
     const requestUser = req.user as JwtDto;
     const user = await this.usersService.getUserById(requestUser.id);
-    if (!user.teamId) throw new BadRequestException('You not in a team');
+    if (!isAdmin(user.role) && !user.teamId)
+      throw new BadRequestException('You not in a team');
 
     const nft = await this.nftsService.getNftById(nftId);
     if (!nft) throw new NotFoundException('NFT ID not found');

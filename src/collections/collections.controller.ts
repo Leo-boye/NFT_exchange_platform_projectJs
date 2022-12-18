@@ -160,7 +160,8 @@ export class CollectionsController {
   ): Promise<CollectionDto> {
     const requestUser = req.user as JwtDto;
     const user = await this.usersService.getUserById(requestUser.id);
-    if (!user.teamId) throw new BadRequestException('You not in a team');
+    if (!isAdmin(user.role) && !user.teamId)
+      throw new BadRequestException('You not in a team');
 
     const currentCollection = await this.collectionsService.getCollectionById(
       collectionId,
@@ -211,7 +212,8 @@ export class CollectionsController {
   ): Promise<boolean> {
     const requestUser = req.user as JwtDto;
     const user = await this.usersService.getUserById(requestUser.id);
-    if (!user.teamId) throw new BadRequestException('You not in a team');
+    if (!isAdmin(user.role) && !user.teamId)
+      throw new BadRequestException('You not in a team');
 
     const currentCollection = await this.collectionsService.getCollectionById(
       collectionId,
