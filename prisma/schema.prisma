@@ -58,12 +58,12 @@ model Collection {
 }
 
 model Sell {
-  id                          String  @id @default(uuid())
-  timestamp                   String
-  buyerId                     String
-  sellerId                    String
-  nftID                       String
-  collectionId                String?
+  id           String   @id @default(uuid())
+  datetime     DateTime
+  buyerId      String
+  sellerId     String
+  nftId        String
+  collectionId String?
 }
 
 enum UserRole {

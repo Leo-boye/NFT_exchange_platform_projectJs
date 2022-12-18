@@ -13,13 +13,19 @@ export class SellsService {
     });
   }
 
+  async getSellById(sellId: string): Promise<SellDto | null> {
+    return await this.prisma.sell.findUnique({
+      where: { id: sellId },
+    });
+  }
+
   async createNewSell(sell: SellCreateDto): Promise<SellDto> {
     return this.prisma.sell.create({
       data: {
-        timestamp: Date.now().toString(),
-        nftID: sell.nftID,
-        sellerId: sell.sellerId,
+        datetime: new Date(Date.now()),
         buyerId: sell.buyerId,
+        sellerId: sell.sellerId,
+        nftId: sell.nftId,
         collectionId: sell.collectionId,
       },
     });

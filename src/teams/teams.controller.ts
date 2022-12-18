@@ -52,19 +52,6 @@ export class TeamsController {
     return await this.teamsService.getAllTeams(offset, limit);
   }
 
-  @Get('/bestSeller')
-  @OptionalJwtAuth()
-  @ApiOperation({ description: 'Get best seller teams' })
-  @ApiQuery({ name: 'offset', required: false, example: 0 })
-  @ApiQuery({ name: 'limit', required: false, example: 5 })
-  @ApiResponse({ status: 200, type: Array<TeamDto> })
-  async getBestSellerTeams(
-    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
-    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
-  ): Promise<Array<TeamDto>> {
-    return await this.teamsService.getBestSellerTeams(offset, limit);
-  }
-
   @Get(':teamId')
   @AdminOnly()
   @ApiOperation({ description: 'Get team from ID' })
@@ -192,5 +179,18 @@ export class TeamsController {
       teamBalance.balance,
       'replace',
     );
+  }
+
+  @Get('/bestSeller')
+  @OptionalJwtAuth()
+  @ApiOperation({ description: 'Get best seller teams' })
+  @ApiQuery({ name: 'offset', required: false, example: 0 })
+  @ApiQuery({ name: 'limit', required: false, example: 5 })
+  @ApiResponse({ status: 200, type: Array<TeamDto> })
+  async getBestSellerTeams(
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
+  ): Promise<Array<TeamDto>> {
+    return await this.teamsService.getBestSellerTeams(offset, limit);
   }
 }

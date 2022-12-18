@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../common/utils/prisma.service';
-import { NftsController } from './nftsController';
+import { NftsController } from './nfts.controller';
 import { NftsService } from './nfts.service';
 import { NftDto } from './dtos/nfts';
 import { TeamsService } from '../teams/teams.service';

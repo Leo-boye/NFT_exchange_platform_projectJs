@@ -30,6 +30,7 @@ import { UsersService } from '../users/users.service';
 import { canChangeStatus, isPublished } from '../common/utils/status';
 import { isAdmin } from '../common/utils/role';
 import { OptionalJwtAuth } from '../auth/jwt-auth.decorator';
+import { SellsService } from '../sells/sells.service';
 
 @Controller('nfts')
 @ApiTags('NFTs management')
@@ -40,6 +41,7 @@ export class NftsController {
     private readonly nftsService: NftsService,
     private readonly teamsService: TeamsService,
     private readonly usersService: UsersService,
+    private readonly sellsService: SellsService,
   ) {}
 
   @Get()
@@ -209,6 +211,12 @@ export class NftsController {
       nft.price,
       'add',
     );
+    await this.sellsService.createNewSell({
+      buyerId: user.id,
+      sellerId: oldOwner.id,
+      nftId: nft.id,
+      collectionId: nft.collectionId,
+    });
     return await this.nftsService.updateNftOwner(nftId, user.id);
   }
 
