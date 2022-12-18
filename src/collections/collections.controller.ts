@@ -126,11 +126,17 @@ export class CollectionsController {
     const user = await this.usersService.getUserById(requestUser.id);
     if (!user.teamId) throw new BadRequestException('You not in a team');
 
-    return await this.collectionsService.createCollection(
+    const res = await this.collectionsService.createCollection(
       collection,
       user.teamId,
       user.name,
     );
+    console.log(
+      `[${Date.now()}] Collection created\n  creator: ${
+        res.userName
+      }\n  team: ${res.teamId}\nstatus: ${res.status}`,
+    );
+    return res;
   }
 
   @Patch(':collectionId')

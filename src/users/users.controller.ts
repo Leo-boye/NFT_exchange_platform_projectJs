@@ -72,6 +72,12 @@ export class UsersController {
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 409, type: ErrorRequestDto })
   async createUser(@Body() user: UserCreateDto): Promise<UserWithPasswordDto> {
-    return await this.usersService.createUser(user);
+    const res = await this.usersService.createUser(user);
+    console.log(
+      `[${Date.now()}] User created\n  email: ${res.email}\n  role: ${
+        res.role
+      }\n`,
+    );
+    return res;
   }
 }

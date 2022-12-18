@@ -117,7 +117,13 @@ export class NftsController {
     const user = await this.usersService.getUserById(requestUser.id);
     if (!user.teamId) throw new BadRequestException('You not in a team');
 
-    return await this.nftsService.createNft(nft, user.id);
+    const res = await this.nftsService.createNft(nft, user.id);
+    console.log(
+      `[${Date.now()}] Nft created\n  owner: ${res.ownerId}\n  status: ${
+        res.status
+      }\nimage: ${res.image}`,
+    );
+    return res;
   }
 
   @Patch(':nftId')
@@ -229,6 +235,14 @@ export class NftsController {
       nftId: nft.id,
       collectionId: nft.collectionId,
     });
-    return await this.nftsService.updateNftOwner(nftId, user.id);
+    const res = await this.nftsService.updateNftOwner(nftId, user.id);
+    console.log(
+      `[${Date.now()}] Nft buy\n  buyer: ${user.id}\n  seller: ${
+        oldOwner.id
+      }\n  nft: ${nft.id}` + nft.collectionId
+        ? `\n  collection: ${nft.collectionId}`
+        : '',
+    );
+    return res;
   }
 }

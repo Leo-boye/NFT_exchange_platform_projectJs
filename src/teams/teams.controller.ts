@@ -102,6 +102,11 @@ export class TeamsController {
       createdTeam.id,
       true,
     );
+    console.log(
+      `[${Date.now()}] Team created\n  owner: ${user.teamId}\n  name: ${
+        createdTeam.name
+      }\n`,
+    );
     return createdTeam;
   }
 
