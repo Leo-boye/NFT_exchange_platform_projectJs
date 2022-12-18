@@ -57,6 +57,15 @@ model Collection {
   userName                    String
 }
 
+model Sell {
+  id           String   @id @default(uuid())
+  datetime     DateTime
+  buyerId      String
+  sellerId     String
+  nftId        String
+  collectionId String?
+}
+
 enum UserRole {
   ADMIN
   BASIC

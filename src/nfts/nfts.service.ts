@@ -85,4 +85,26 @@ export class NftsService {
       data: { ownerId: ownerId },
     });
   }
+
+  async getBestRatedNfts(
+    offset: number,
+    limit: number,
+  ): Promise<Array<NftDto>> {
+    return await this.prisma.nft.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: [
+        {
+          rating: 'desc',
+        },
+        {
+          ratingCount: 'desc',
+        },
+        {
+          name: 'desc',
+        },
+      ],
+      skip: offset,
+      take: limit,
+    });
+  }
 }

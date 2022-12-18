@@ -36,16 +36,18 @@ import { editFileName, imageFileFilter } from '../common/utils/file';
 import { canChangeStatus, isPublished } from '../common/utils/status';
 import { isAdmin } from '../common/utils/role';
 import { OptionalJwtAuth } from '../auth/jwt-auth.decorator';
+import { SellsService } from '../sells/sells.service';
 
 @Controller('nfts')
 @ApiTags('NFTs management')
 @ApiBearerAuth('JWT-auth')
 @ApiResponse({ status: 401, type: ErrorRequestDto })
-export class nftsController {
+export class NftsController {
   constructor(
     private readonly nftsService: NftsService,
     private readonly teamsService: TeamsService,
     private readonly usersService: UsersService,
+    private readonly sellsService: SellsService,
   ) {}
 
   @Get()
@@ -64,6 +66,19 @@ export class nftsController {
       ? await this.usersService.getUserById(requestUser.id)
       : null;
     return await this.nftsService.getAllNfts(offset, limit, user);
+  }
+
+  @Get('/topRated')
+  @OptionalJwtAuth()
+  @ApiOperation({ description: 'Show best rated nfts' })
+  @ApiQuery({ name: 'offset', required: false, example: 0 })
+  @ApiQuery({ name: 'limit', required: false, example: 5 })
+  @ApiResponse({ status: 200, type: Array<NftDto> })
+  async bestRatedNfts(
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
+  ): Promise<Array<NftDto>> {
+    return await this.nftsService.getBestRatedNfts(offset, limit);
   }
 
   @Get(':nftId')
@@ -88,7 +103,6 @@ export class nftsController {
       : null;
 
     const res = await this.nftsService.getNftById(nftId);
-    console.log(res);
     if (
       res &&
       ((user && isAdmin(user.role)) ||
@@ -231,6 +245,12 @@ export class nftsController {
       nft.price,
       'add',
     );
+    await this.sellsService.createNewSell({
+      buyerId: user.id,
+      sellerId: oldOwner.id,
+      nftId: nft.id,
+      collectionId: nft.collectionId,
+    });
     return await this.nftsService.updateNftOwner(nftId, user.id);
   }
 }

@@ -15,6 +15,7 @@ import { TeamsModule } from './teams/teams.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { SellsModule } from './sells/sells.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { APP_GUARD } from '@nestjs/core';
     NftsModule,
     TeamsModule,
     UsersModule,
+    SellsModule,
   ],
   controllers: [],
   providers: [
