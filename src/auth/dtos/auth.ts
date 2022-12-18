@@ -4,7 +4,7 @@ import { UserWithPasswordDto } from '../../users/dtos/users';
 
 export class LoginDto {
   @ApiProperty({ example: 'admin@example.org' })
-  username: string;
+  email: string;
 
   @ApiProperty({ example: 'admin' })
   password: string;

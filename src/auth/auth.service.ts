@@ -11,11 +11,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(
-    username: string,
-    password: string,
-  ): Promise<UserDto | null> {
-    const user = await this.usersService.getUserCredentials(username);
+  async validateUser(email: string, password: string): Promise<UserDto | null> {
+    const user = await this.usersService.getUserCredentials(email);
     if (user && user.password === password) {
       const { password, ...result } = user;
       return result;
@@ -24,10 +21,7 @@ export class AuthService {
   }
 
   async login(loginUser: LoginDto) {
-    const user = await this.validateUser(
-      loginUser.username,
-      loginUser.password,
-    );
+    const user = await this.validateUser(loginUser.email, loginUser.password);
     if (!user) {
       return { access_token: null };
     }

@@ -19,7 +19,7 @@ export class AuthController {
   @ApiResponse({ status: 400, type: ErrorRequestDto })
   @ApiResponse({ status: 401, type: ErrorRequestDto })
   async login(@Body() body: LoginDto) {
-    console.log(`[${Date.now()}] ${body.username} is trying to login`);
+    console.log(`[${Date.now()}] ${body.email} is trying to login`);
     return await this.authService.login(body);
   }
 }
