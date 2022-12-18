@@ -50,7 +50,7 @@ export class NftsService {
     return await this.prisma.nft.create({
       data: {
         name: nft.name,
-        image: nft.imageFile.path,
+        image: nft.file.path,
         price: nft.price,
         status: nft.status,
         ownerId: ownerId,

@@ -37,7 +37,7 @@ export class NftCreateDto {
   name: string;
 
   @ApiProperty({ type: 'string', format: 'binary' })
-  imageFile: Express.Multer.File;
+  file: Express.Multer.File;
 
   @ApiProperty({ example: '100' })
   @Type(() => Number)
@@ -55,7 +55,7 @@ export class NftCreateDto {
   status: Status;
 }
 
-export class NftDto extends OmitType(NftCreateDto, ['imageFile'] as const) {
+export class NftDto extends OmitType(NftCreateDto, ['file'] as const) {
   @ApiProperty({ example: '59c78745-aa9e-4930-b338-214aff8b07be' })
   @IsUUID()
   @IsNotEmpty()

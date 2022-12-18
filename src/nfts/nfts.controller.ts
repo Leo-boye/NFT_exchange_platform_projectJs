@@ -133,12 +133,16 @@ export class NftsController {
     @UploadedFile() file: Express.Multer.File,
     @Req() req,
   ): Promise<NftDto> {
-    nft.imageFile = file;
+    nft.file = file;
     // FIXME: file is save even if dto validator fails
     const requestUser = req.user as JwtDto;
     const user = await this.usersService.getUserById(requestUser.id);
     if (!isAdmin(user.role) && !user.teamId)
       throw new BadRequestException('You not in a team');
+
+    // scotch parce que 'multipart/form-data' retourne 'price' sous forme de string
+    // et que le dto ne le convertit pas en number pour une raison inconnue
+    nft.price = Number(nft.price);
 
     const res = await this.nftsService.createNft(nft, user.id);
     console.log(
