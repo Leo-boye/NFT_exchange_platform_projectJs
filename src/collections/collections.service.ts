@@ -58,6 +58,15 @@ export class CollectionsService {
     });
   }
 
+  async addNftToCollection(collectionId: string, nftId: string): Promise<void> {
+    await this.prisma.nft.update({
+      where: { id: nftId },
+      data: {
+        collectionId: collectionId,
+      },
+    });
+  }
+
   async getBestSellerCollections(
     offset: number,
     limit: number,
@@ -65,8 +74,9 @@ export class CollectionsService {
     return await this.prisma.collection.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: {
-        // TODO
-        name: 'asc',
+        Sell: {
+          _count: 'desc',
+        },
       },
       skip: offset,
       take: limit,

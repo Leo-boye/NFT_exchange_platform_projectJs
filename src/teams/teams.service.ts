@@ -58,9 +58,7 @@ export class TeamsService {
     return await this.prisma.team.findMany({
       orderBy: [
         {
-          balance: 'desc',
-        },
-        {
+          // TODO
           name: 'asc',
         },
       ],

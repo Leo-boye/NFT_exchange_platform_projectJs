@@ -137,9 +137,16 @@ export class NftsController {
     // FIXME: file is save even if dto validator fails
     const requestUser = req.user as JwtDto;
     const user = await this.usersService.getUserById(requestUser.id);
-    if (!user.teamId) throw new BadRequestException('You not in a team');
+    if (!isAdmin(user.role) && !user.teamId)
+      throw new BadRequestException('You not in a team');
 
-    return await this.nftsService.createNft(nft, user.id);
+    const res = await this.nftsService.createNft(nft, user.id);
+    console.log(
+      `[${Date.now()}] Nft created\n  owner: ${res.ownerId}\n  status: ${
+        res.status
+      }\nimage: ${res.image}`,
+    );
+    return res;
   }
 
   @Patch(':nftId')
@@ -197,7 +204,8 @@ export class NftsController {
     // FIXME: un user peut actuellement voter autant de fois qu'il veut, faudrait faire une table dédiée au vote, mais flemme
     const requestUser = req.user as JwtDto;
     const user = await this.usersService.getUserById(requestUser.id);
-    if (!user.teamId) throw new BadRequestException('You not in a team');
+    if (!isAdmin(user.role) && !user.teamId)
+      throw new BadRequestException('You not in a team');
 
     const nft = await this.nftsService.getNftById(nftId);
     if (!nft) throw new NotFoundException('NFT ID not found');
@@ -251,6 +259,14 @@ export class NftsController {
       nftId: nft.id,
       collectionId: nft.collectionId,
     });
-    return await this.nftsService.updateNftOwner(nftId, user.id);
+    const res = await this.nftsService.updateNftOwner(nftId, user.id);
+    console.log(
+      `[${Date.now()}] Nft buy\n  buyer: ${user.id}\n  seller: ${
+        oldOwner.id
+      }\n  nft: ${nft.id}` + nft.collectionId
+        ? `\n  collection: ${nft.collectionId}`
+        : '',
+    );
+    return res;
   }
 }

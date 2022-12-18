@@ -47,3 +47,8 @@ npm run start
 * `prisma` for database management (good for migrations and ORM)
 * `passport` for authentication
 * `swagger` for API documentation
+
+## Author
+
+* Léo Boyé (leo.boye@epita.fr)
+* Mathis Aymonin (mathis.aymonin@epita.fr)
