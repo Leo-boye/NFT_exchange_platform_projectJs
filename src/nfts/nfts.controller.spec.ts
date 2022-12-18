@@ -27,10 +27,10 @@ describe('CollectionController', () => {
     it('should return an empty array of nft', async () => {
       const result = [{}] as NftDto[];
       jest
-        .spyOn(nftsService, 'getBestRatedNFT')
+        .spyOn(nftsService, 'getBestRatedNfts')
         .mockImplementation(() => Promise.resolve(result));
 
-      expect(await nftsController.bestRatedNft(0, 100)).toBe(result);
+      expect(await nftsController.bestRatedNfts(0, 100)).toBe(result);
     });
     it('should return an array one of nft', async () => {
       const result = [
@@ -43,10 +43,10 @@ describe('CollectionController', () => {
         },
       ] as NftDto[];
       jest
-        .spyOn(nftsService, 'getBestRatedNFT')
+        .spyOn(nftsService, 'getBestRatedNfts')
         .mockImplementation(() => Promise.resolve(result));
 
-      expect(await nftsController.bestRatedNft(0, 100)).toBe(result);
+      expect(await nftsController.bestRatedNfts(0, 100)).toBe(result);
     });
     it('should return an array of many nfts sorted', async () => {
       const result = [
@@ -60,10 +60,10 @@ describe('CollectionController', () => {
         { collectionId: '1', id: '2', ownerId: '2', rating: 5, ratingCount: 2 },
       ] as NftDto[];
       jest
-        .spyOn(nftsService, 'getBestRatedNFT')
+        .spyOn(nftsService, 'getBestRatedNfts')
         .mockImplementation(() => Promise.resolve(result));
 
-      expect(await nftsController.bestRatedNft(0, 100)).toBe(result);
+      expect(await nftsController.bestRatedNfts(0, 100)).toBe(result);
     });
     it('should return an array of many nft sorted with ambiguity', async () => {
       const result = [
@@ -78,10 +78,10 @@ describe('CollectionController', () => {
         { collectionId: '1', id: '3', ownerId: '2', rating: 5, ratingCount: 6 },
       ] as NftDto[];
       jest
-        .spyOn(nftsService, 'getBestRatedNFT')
+        .spyOn(nftsService, 'getBestRatedNfts')
         .mockImplementation(() => Promise.resolve(result));
 
-      expect(await nftsController.bestRatedNft(0, 100)).toBe(result);
+      expect(await nftsController.bestRatedNfts(0, 100)).toBe(result);
     });
   });
 });

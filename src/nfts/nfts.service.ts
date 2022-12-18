@@ -86,8 +86,12 @@ export class NftsService {
     });
   }
 
-  async getBestRatedNFT(offset: number, limit: number): Promise<Array<NftDto>> {
+  async getBestRatedNfts(
+    offset: number,
+    limit: number,
+  ): Promise<Array<NftDto>> {
     return await this.prisma.nft.findMany({
+      where: { status: 'PUBLISHED' },
       orderBy: [
         {
           rating: 'desc',

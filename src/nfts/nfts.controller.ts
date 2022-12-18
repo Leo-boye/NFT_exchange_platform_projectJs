@@ -62,6 +62,19 @@ export class NftsController {
     return await this.nftsService.getAllNfts(offset, limit, user);
   }
 
+  @Get('/topRated')
+  @OptionalJwtAuth()
+  @ApiOperation({ description: 'Show best rated nfts' })
+  @ApiQuery({ name: 'offset', required: false, example: 0 })
+  @ApiQuery({ name: 'limit', required: false, example: 5 })
+  @ApiResponse({ status: 200, type: Array<NftDto> })
+  async bestRatedNfts(
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
+  ): Promise<Array<NftDto>> {
+    return await this.nftsService.getBestRatedNfts(offset, limit);
+  }
+
   @Get(':nftId')
   @OptionalJwtAuth()
   @ApiOperation({ description: 'Get nft from ID' })
@@ -217,19 +230,5 @@ export class NftsController {
       collectionId: nft.collectionId,
     });
     return await this.nftsService.updateNftOwner(nftId, user.id);
-  }
-
-  @Get('/topRated')
-  @OptionalJwtAuth()
-  @ApiOperation({ description: 'Show best rated NFT' })
-  @ApiQuery({ name: 'offset', required: false, example: 0 })
-  @ApiQuery({ name: 'limit', required: false, example: 5 })
-  @ApiResponse({ status: 200, type: Array<NftDto> })
-  async bestRatedNft(
-    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
-    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit: number,
-  ): Promise<Array<NftDto>> {
-    // FIXME
-    return await this.nftsService.getBestRatedNFT(offset, limit);
   }
 }
